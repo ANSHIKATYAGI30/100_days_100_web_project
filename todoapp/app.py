@@ -85,4 +85,35 @@ def dashboard():
 
     return render_template('dashboard.html', name=user.name, tasks=tasks, edit_id=edit_id)
 
+@app.route('/delete/<int:task_id>')
+def delete_task(task_id):
+    task = Task.query.get_or_404(task_id)
+    if 'email' not in session or task.user.email != session['email']:
+        return redirect('/login')
+    db.session.delete(task)
+    db.session.commit()
+    return redirect('/dashboard')
+
+@app.route('/update/<int:task_id>', methods=['POST'])
+def update_task(task_id):
+    task = Task.query.get_or_404(task_id)
+    if 'email' not in session or task.user.email != session['email']:
+        return redirect('/login')
+
+    task.title = request.form['title']
+    db.session.commit()
+    return redirect('/dashboard')
+
+
+
+
+@app.route('/logout')
+def logout():
+    session.pop('email',None)
+    return redirect('/login')
+
+if __name__ == "__main__":
+    app.run()
+
+
 
