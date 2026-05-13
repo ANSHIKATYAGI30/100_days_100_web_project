@@ -82,7 +82,9 @@ body.dark-mode {
      position: relative;
     z-index: 1;
 }
-
+.submit {
+    display: none;
+}
 .split-layout {
     display: grid;
     grid-template-columns: 1fr 1fr;

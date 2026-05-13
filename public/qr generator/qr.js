@@ -15,16 +15,27 @@ const qrReaderResults = document.getElementById('qr-reader-results');
 const toggleThemeBtn = document.getElementById('toggle-theme');
 
 let qrcode = null;
-
+let realtimeTimer = null;
 function updateInputFields() {
     const selectedType = qrType.value;
     inputText.style.display = selectedType === 'text' || selectedType === 'url' ? 'block' : 'none';
     wifiInputs.style.display = selectedType === 'wifi' ? 'block' : 'none';
     vcardInputs.style.display = selectedType === 'vcard' ? 'block' : 'none';
 }
+qrType.addEventListener('change', () => {
+    updateInputFields();
+    generateQRCode();
+});
 
-qrType.addEventListener('change', updateInputFields);
+function scheduleGenerate() {
 
+    clearTimeout(realtimeTimer);
+
+    realtimeTimer = setTimeout(() => {
+        generateQRCode();
+    }, 350);
+
+}
 function generateQRCode() {
     qrcodeDiv.innerHTML = '';
     const selectedType = qrType.value;
@@ -123,11 +134,33 @@ function addLogoToQRCode() {
     }
 }
 
-generateBtn.addEventListener('click', generateQRCode);
-qrColor.addEventListener('change', generateQRCode);
-qrShape.addEventListener('change', generateQRCode);
-errorCorrection.addEventListener('change', generateQRCode);
-logoUpload.addEventListener('change', generateQRCode);
+inputText.addEventListener('input', scheduleGenerate);
+
+document.getElementById('wifi-ssid')
+    .addEventListener('input', scheduleGenerate);
+
+document.getElementById('wifi-password')
+    .addEventListener('input', scheduleGenerate);
+
+document.getElementById('wifi-encryption')
+    .addEventListener('change', scheduleGenerate);
+
+document.getElementById('vcard-name')
+    .addEventListener('input', scheduleGenerate);
+
+document.getElementById('vcard-phone')
+    .addEventListener('input', scheduleGenerate);
+
+document.getElementById('vcard-email')
+    .addEventListener('input', scheduleGenerate);
+
+document.getElementById('vcard-website')
+    .addEventListener('input', scheduleGenerate);
+qrColor.addEventListener('input', scheduleGenerate);
+qrShape.addEventListener('change', scheduleGenerate);
+errorCorrection.addEventListener('change', scheduleGenerate);
+logoUpload.addEventListener('change', scheduleGenerate);
+
 
 downloadBtn.addEventListener('click', function() {
     if (qrcode) {
