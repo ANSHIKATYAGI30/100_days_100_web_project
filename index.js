@@ -124,7 +124,7 @@ if (currentTheme === 'light') {
 
 themeToggle.addEventListener('click', () => {
     document.body.classList.toggle('light-mode');
-    
+
     if (document.body.classList.contains('light-mode')) {
         themeIcon.classList.remove('fa-moon');
         themeIcon.classList.add('fa-sun');
@@ -143,13 +143,13 @@ function updateNavbar() {
     const username = window.username || null;
     const isRoot = !window.location.pathname.includes('/contributors/');
     const basePath = isRoot ? '' : '../';
-    
+
     const themeButton = `
         <button id="themeToggle" class="button" title="Toggle Theme">
             <i class="fas ${document.body.classList.contains('light-mode') ? 'fa-sun' : 'fa-moon'}"></i>
         </button>
     `;
-    
+
     if (username) {
         buttons.innerHTML = `
         <span class="welcome-text">Welcome, ${username}</span>
@@ -169,14 +169,14 @@ function updateNavbar() {
         <a class="button login-btn" href="${basePath}public/Login.html">Log in</a>
         ${themeButton}`;
     }
-    
+
     // Re-attach theme toggle event listener
     const newThemeToggle = document.getElementById('themeToggle');
     const newThemeIcon = newThemeToggle.querySelector('i');
-    
+
     newThemeToggle.addEventListener('click', () => {
         document.body.classList.toggle('light-mode');
-        
+
         if (document.body.classList.contains('light-mode')) {
             newThemeIcon.classList.remove('fa-moon');
             newThemeIcon.classList.add('fa-sun');
@@ -188,10 +188,14 @@ function updateNavbar() {
         }
     });
 }
+let currentPage = 1;
+const itemsPerPage = 10;
+let projectData = [];
 
 // Populate the table with project data
+
 function fillTable() {
-   const data = [
+    projectData = [
         ["Day 1", "To-Do List", "./public/TO_DO_LIST/todolist.html"],
         ["Day 2", "Digital Clock", "./public/digital_clock/digitalclock.html"],
         ["Day 3", "Indian Flag", "./public/indianflag/flag.html"],
@@ -240,7 +244,7 @@ function fillTable() {
         ["Day 46", "Palindrome Generator", "./public/Palindrome_Generator/index.html"],
         ["Day 47", "Ping Pong Game", "./public/ping/index.html"],
         ["Day 48", "TextToVoiceConverter", "./public/TextToVoiceConverter/index.html"],
-        ["Day 49", "Url Shortener", "https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/url_shortener"],
+        ["Day 49", "Url Shortener", "https://github.com/chandankoranga02/100_days_100_web_project/tree/Main/public/url_shortener"],
         ["Day 50", "Recipe Genie", "https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/Recipe-Genie"],
         ["Day 51", "Netflix Landing Page Clone", "./public/Netflix_Cloning/Index.html"],
         ["Day 52", "ClimaCode", "./public/ClimaCode%202.0/index.html"],
@@ -304,19 +308,37 @@ function fillTable() {
         ["Day 110", "CRYPTOSHOW", "./public/CRYPTOSHOW/index.html"],
         ["Day 111", "Whack-a-Mole Game", "./public/Whack-a-Mole Game/index.html"],
         ["Day 112", "Nykaa Clone Website", "./public/Nykaa-clone/index.html"],
-        ["Day 113", "CPU Scheduler", "./public/CpuScheduler/index.html"],
-     ["Day 114","EchoNotes","./public/EchoNotes/index.html"],
-<<<<<<< HEAD
-     ["Day 115", "ZEN TIMER", "./public/ZEN_TIMER/index.html"]
-=======
-     ["Day 115", "ZEN TIMER", "./public/ZEN_TIMER/index.html"],
->>>>>>> 0b0f5f1b7b3ff3e1f089b21d9828df700316937b
+        ["Day 113", "CPU Scheduler", "./public/CpuScheduler/index.html"] feature/pagination-project-list
+        ["Day 114", "EchoNotes", "./public/EchoNotes/index.html"]
     ];
+
+        ["Day 114","EchoNotes","./public/EchoNotes/idex.html"],
+        ["Day 115", "Event Registration System", "https://event-registration-system-w10a.onrender.com/"],
+        ["Day 116", "AI Image Classifier", "/public/AI Image CLassifier/index.html"]];
+    
+
+ 
 
     const tbody = document.getElementById('tableBody');
 
-    data.forEach(e => {
+
+    renderTable();
+
+    createPagination();
+}
+function renderTable() {
+    const tbody = document.getElementById('tableBody');
+
+    tbody.innerHTML = '';
+
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const endIndex = startIndex + itemsPerPage;
+
+    const paginatedData = projectData.slice(startIndex, endIndex);
+
+    paginatedData.forEach(e => {
         const row = document.createElement('tr');
+
         const days = document.createElement('td');
         const nameP = document.createElement('td');
         const link = document.createElement('td');
@@ -324,18 +346,61 @@ function fillTable() {
 
         days.innerText = e[0];
         nameP.innerText = e[1];
+
         a.href = e[2].trim();
         a.innerHTML = 'View Demo <i class="fas fa-external-link-alt"></i>';
         a.target = '_blank';
+
         nameP.classList.add('project-name');
 
         link.appendChild(a);
+
         row.appendChild(days);
         row.appendChild(nameP);
         row.appendChild(link);
 
         tbody.appendChild(row);
     });
+}
+function createPagination() {
+    const paginationContainer = document.getElementById('pagination');
+
+    paginationContainer.innerHTML = '';
+
+    const totalPages = Math.ceil(projectData.length / itemsPerPage);
+
+    // Previous Button
+    const prevBtn = document.createElement('button');
+    prevBtn.innerText = 'Previous';
+    prevBtn.disabled = currentPage === 1;
+
+    prevBtn.addEventListener('click', () => {
+        currentPage--;
+        renderTable();
+        createPagination();
+    });
+
+    paginationContainer.appendChild(prevBtn);
+
+    // Page Indicator
+    const pageInfo = document.createElement('span');
+    pageInfo.innerText = ` Page ${currentPage} of ${totalPages} `;
+    pageInfo.style.margin = '0 10px';
+
+    paginationContainer.appendChild(pageInfo);
+
+    // Next Button
+    const nextBtn = document.createElement('button');
+    nextBtn.innerText = 'Next';
+    nextBtn.disabled = currentPage === totalPages;
+
+    nextBtn.addEventListener('click', () => {
+        currentPage++;
+        renderTable();
+        createPagination();
+    });
+
+    paginationContainer.appendChild(nextBtn);
 }
 
 // Filter Projects
