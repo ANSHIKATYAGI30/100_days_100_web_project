@@ -306,7 +306,7 @@ function renderTable() {
         nameCell.innerText = entry[1];
         nameCell.classList.add('project-name');
 
-        anchor.href = String(entry[2]).trim();
+        anchor.href = entry[2].trim();
         anchor.innerHTML = 'View Demo <i class="fas fa-external-link-alt"></i>';
         anchor.target = '_blank';
 
@@ -394,12 +394,12 @@ function initSearchHelpers() {
         const value = searchInput.value.trim();
 
         if (charDisplay) {
-            charDisplay.innerText = String(value.length);
+            charDisplay.innerText = value.length;
         }
 
         if (wordDisplay) {
             const words = value ? value.split(/\s+/).length : 0;
-            wordDisplay.innerText = String(words);
+            wordDisplay.innerText = words;
         }
     });
 }
