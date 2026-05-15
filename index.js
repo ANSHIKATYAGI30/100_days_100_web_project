@@ -318,6 +318,9 @@ function initTheme() {
         localStorage.setItem('theme', isLight ? 'light' : 'dark');
     });
 }
+let currentPage = 1;
+const itemsPerPage = 10;
+let projectData = [];
 
 /* ============================================================
    SCROLL TO TOP
