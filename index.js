@@ -1,3 +1,5 @@
+document.body.classList.add('cyberpunk-mode');
+document.body.setAttribute('data-theme', 'cyberpunk');
 if (typeof REPO_OWNER === 'undefined') {
     window.REPO_OWNER = "dhairyagothi";
     window.REPO_NAME = "100_days_100_web_project";
@@ -57,10 +59,12 @@ function initCanvas() {
             if (this.y < 0 || this.y > canvas.height) this.vy *= -1;
         }
 
-        draw() {
-            const isDark = !document.body.classList.contains('light-mode');
-            const alpha = isDark ? Math.random() * 0.5 + 0.2 : Math.random() * 0.3 + 0.1;
-            ctx.fillStyle = `rgba(26, 188, 156, ${alpha})`;
+      draw() {
+    const isDark = !document.body.classList.contains('light-mode');
+    const alpha = isDark ? Math.random() * 0.5 + 0.2 : Math.random() * 0.3 + 0.1;
+    ctx.fillStyle = document.body.classList.contains('light-mode') 
+  ? `rgba(0, 0, 0, ${alpha})`
+  : `rgba(0, 255, 255, ${alpha})`;
             ctx.beginPath();
             ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
             ctx.fill();
@@ -73,7 +77,9 @@ function initCanvas() {
 
     function animate() {
         const isDark = !document.body.classList.contains('light-mode');
-        ctx.fillStyle = isDark ? 'rgba(10, 10, 10, 0.1)' : 'rgba(245, 245, 245, 0.1)';
+       ctx.fillStyle = document.body.classList.contains('light-mode')
+  ? 'rgba(240, 240, 240, 0.3)'
+  : 'rgba(10, 10, 15, 0.15)';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
 
         particles.forEach(p => {
@@ -89,7 +95,9 @@ function initCanvas() {
 
                 if (dist < 100) {
                     const alpha = isDark ? 0.2 * (1 - dist / 100) : 0.1 * (1 - dist / 100);
-                    ctx.strokeStyle = `rgba(26, 188, 156, ${alpha})`;
+                    ctx.strokeStyle = document.body.classList.contains('light-mode')
+  ? `rgba(255, 0, 255, ${alpha})`
+  : `rgba(0, 255, 255, ${alpha})`;
                     ctx.lineWidth = 1;
                     ctx.beginPath();
                     ctx.moveTo(particles[i].x, particles[i].y);
