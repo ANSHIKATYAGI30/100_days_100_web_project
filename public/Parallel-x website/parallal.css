@@ -6,7 +6,7 @@
     box-sizing: border-box;
 
 }
-body {
+html, body {
     font-family: "Roboto Condensed", sans-serif;
     font-optical-sizing: auto;
     font-weight: 400;
@@ -26,28 +26,28 @@ header{
     padding-right: 20px;
     gap: 125px;
     z-index: 30;
+    cursor: pointer;
 }
 nav ul{
     display: flex;
     flex-direction: row;
     list-style: none;
-    gap:50px;
+    gap:35px;
+    font-weight: 600;
+    margin-top: 10px;
     padding-right: 10px;
 }
-.active{
-    color: white;
-    background-color: #359381;
-    border-radius: 30px;
-    width: 100%;
-}
+
 nav ul :hover{
     color: white;
     background-color: #359381;
     border-radius: 30px;
     width: 100%;
+    cursor: pointer;
+    transition: 0.3;
 }
 nav ul li{
-    padding: 6px;
+    padding: 5px 12px;
 }
 .parallal{
     height: 100vh;
@@ -73,8 +73,54 @@ img{
 .content{
     background: #01372d;
     color: white;
-    font-size: 25px;
+    font-size: 20px;
+    font-style: italic;
     position: relative;
     padding: 60px;
     height: 100dvh;
+    cursor: default;
+}
+
+.footer {
+    background-color: rgba(0, 0, 0, 0.85);
+    color: white;
+    text-align: center;
+    padding: 20px;
+    margin-top: 10px;
+}
+
+.footer-links {
+    margin-top: 10px;
+}
+
+.footer-links a {
+    color: white;
+    margin: 0 10px;
+    text-decoration: none;
+}
+
+.footer-links a:hover {
+    color: gray;
+}
+
+@media (max-width: 768px) {
+    nav {
+    flex-direction: column;
+    text-align: center;
+    padding: 10px;
+}
+
+    nav a {
+    display: block;
+    margin: 8px 0;
+}
+
+    .footer {
+    padding: 15px;
+}
+
+    .footer-links a {
+    display: inline-block;
+    margin: 5px;
+}
 }
