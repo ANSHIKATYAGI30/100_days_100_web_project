@@ -20,10 +20,10 @@ precision mediump float;
 varying vec2 vUv;
 
 uniform float iTime;
-uniform vec3 iResolution;
+uniform vec3  iResolution;
 uniform float uScale;
 
-uniform vec2 uGridMul;
+uniform vec2  uGridMul;
 uniform float uDigitSize;
 uniform float uScanlineIntensity;
 uniform float uGlitchAmount;
@@ -32,8 +32,8 @@ uniform float uNoiseAmp;
 uniform float uChromaticAberration;
 uniform float uDither;
 uniform float uCurvature;
-uniform vec3 uTint;
-uniform vec2 uMouse;
+uniform vec3  uTint;
+uniform vec2  uMouse;
 uniform float uMouseStrength;
 uniform float uUseMouse;
 uniform float uPageLoadProgress;
@@ -50,7 +50,7 @@ float hash21(vec2 p){
 
 float noise(vec2 p)
 {
-  return sin(p.x * 10.0) * sin(p.y * (3.0 + sin(time * 0.090909))) + 0.2;
+  return sin(p.x * 10.0) * sin(p.y * (3.0 + sin(time * 0.090909))) + 0.2; 
 }
 
 mat2 rotate(float angle)
@@ -114,6 +114,7 @@ float digit(vec2 p){
         float cellRandom = fract(sin(dot(s, vec2(12.9898, 78.233))) * 43758.5453);
         float cellDelay = cellRandom * 0.8;
         float cellProgress = clamp((uPageLoadProgress - cellDelay) / 0.2, 0.0, 1.0);
+        
         float fadeAlpha = smoothstep(0.0, 1.0, cellProgress);
         intensity *= fadeAlpha;
     }
@@ -150,6 +151,7 @@ float displace(vec2 look)
 }
 
 vec3 getColor(vec2 p){
+    
     float bar = step(mod(p.y + time * 20.0, 1.0), 0.2) * 0.4 + 1.0;
     bar *= uScanlineIntensity;
     
@@ -162,6 +164,7 @@ vec3 getColor(vec2 p){
     }
 
     float middle = digit(p);
+    
     const float off = 0.002;
     float sum = digit(p + vec2(-off, -off)) + digit(p + vec2(0.0, -off)) + digit(p + vec2(off, -off)) +
                 digit(p + vec2(-off, 0.0)) + digit(p + vec2(0.0, 0.0)) + digit(p + vec2(off, 0.0)) +
@@ -227,13 +230,15 @@ function FaultyTerminal({
   timeScale = 0.3,
   pause = false,
   scanlineIntensity = 0.3,
-  glitchAmount = 1,
+  // set a slight default > 1 so the glitch displacement is active
+  glitchAmount = 1.25,
   flickerAmount = 1,
   noiseAmp = 0,
   chromaticAberration = 0,
   dither = 0,
   curvature = 0.2,
   tint = '#a7ef9e',
+  // mouse reactions can be expensive on touch devices; we'll auto-disable below
   mouseReact = true,
   mouseStrength = 0.2,
   dpr = Math.min(window.devicePixelRatio || 1, 2),
@@ -256,6 +261,9 @@ function FaultyTerminal({
   const tintVec = useMemo(() => hexToRgb(tint), [tint]);
   const ditherValue = useMemo(() => (typeof dither === 'boolean' ? (dither ? 1 : 0) : dither), [dither]);
 
+  // basic touch/mobile detection
+  const isTouchDevice = typeof window !== 'undefined' && ('ontouchstart' in window || navigator.maxTouchPoints > 0 || window.matchMedia('(pointer: coarse)').matches);
+
   const handleMouseMove = useCallback(event => {
     const container = containerRef.current;
     if (!container) return;
@@ -270,17 +278,114 @@ function FaultyTerminal({
     const container = containerRef.current;
     if (!container) return undefined;
 
-    const renderer = new Renderer({ dpr });
-    rendererRef.current = renderer;
-    const gl = renderer.gl;
-    gl.clearColor(0, 0, 0, 1);
+    // On small screens / mobile, reduce DPR and throttle frames to improve performance
+    const smallScreen = typeof window !== 'undefined' && window.innerWidth <= 720;
+    const useDpr = smallScreen ? Math.min(dpr, 1) : dpr;
+    let renderer;
+    let gl;
+    let fallbackCleanup = null;
+
+    try {
+      renderer = new Renderer({ dpr: useDpr });
+      rendererRef.current = renderer;
+      gl = renderer.gl;
+      if (!gl) throw new Error('No GL context');
+      gl.clearColor(0, 0, 0, 1);
+      console.log('[hero-terminal] WebGL renderer initialized', { dpr: useDpr, width: gl.canvas.width, height: gl.canvas.height });
+    } catch (err) {
+      console.warn('[hero-terminal] WebGL init failed, falling back to 2D canvas', err);
+      // WebGL failed — create a lightweight 2D fallback canvas to keep the hero visible
+      const create2DFallback = (parent, tintColor = '#38bdf8') => {
+        const canvas = document.createElement('canvas');
+        canvas.style.width = '100%';
+        canvas.style.height = '100%';
+        canvas.style.display = 'block';
+        canvas.style.pointerEvents = 'none';
+        canvas.width = parent.offsetWidth * (window.devicePixelRatio || 1);
+        canvas.height = parent.offsetHeight * (window.devicePixelRatio || 1);
+        const ctx = canvas.getContext('2d');
+
+        let rafId = 0;
+        let last = 0;
+        const fpsInterval = 1000 / 30; // throttle to 30fps
+
+        function draw(now) {
+          rafId = requestAnimationFrame(draw);
+          if (now - last < fpsInterval) return;
+          last = now;
+          const w = canvas.width;
+          const h = canvas.height;
+          ctx.clearRect(0, 0, w, h);
+
+          // background gradient
+          const grad = ctx.createLinearGradient(0, 0, 0, h);
+          grad.addColorStop(0, 'rgba(4,8,18,0.25)');
+          grad.addColorStop(1, 'rgba(2,6,23,0.8)');
+          ctx.fillStyle = grad;
+          ctx.fillRect(0, 0, w, h);
+
+          // subtle tint overlay
+          ctx.fillStyle = tintColor;
+          ctx.globalAlpha = 0.06 + 0.02 * Math.sin(now * 0.002);
+          ctx.fillRect(0, 0, w, h);
+          ctx.globalAlpha = 1;
+
+          // scanlines
+          ctx.fillStyle = 'rgba(255,255,255,0.02)';
+          const step = Math.max(3, Math.floor(h / 200));
+          for (let y = 0; y < h; y += step * (window.devicePixelRatio || 1)) {
+            ctx.fillRect(0, y, w, 1);
+          }
+        }
+
+        parent.appendChild(canvas);
+
+        // visible label so users can see fallback is active
+        const label = document.createElement('div');
+        label.style.position = 'absolute';
+        label.style.right = '8px';
+        label.style.top = '8px';
+        label.style.padding = '4px 8px';
+        label.style.background = 'rgba(0,0,0,0.45)';
+        label.style.color = '#cfefff';
+        label.style.fontFamily = 'JetBrains Mono, monospace';
+        label.style.fontSize = '11px';
+        label.style.borderRadius = '6px';
+        label.style.zIndex = '2';
+        label.textContent = 'Terminal: fallback';
+        parent.appendChild(label);
+        rafId = requestAnimationFrame(draw);
+
+        const resize = () => {
+          canvas.width = parent.offsetWidth * (window.devicePixelRatio || 1);
+          canvas.height = parent.offsetHeight * (window.devicePixelRatio || 1);
+        };
+
+        const ro = new ResizeObserver(resize);
+        ro.observe(parent);
+
+        return () => {
+          cancelAnimationFrame(rafId);
+          ro.disconnect();
+          if (canvas.parentElement === parent) parent.removeChild(canvas);
+          if (label.parentElement === parent) parent.removeChild(label);
+        };
+      };
+
+      fallbackCleanup = create2DFallback(container, tint);
+      return () => {
+        if (typeof fallbackCleanup === 'function') fallbackCleanup();
+      };
+    }
 
     const geometry = new Geometry(gl, {
       position: { size: 2, data: new Float32Array([-1, -1, 3, -1, -1, 3]) },
       uv: { size: 2, data: new Float32Array([0, 0, 2, 0, 0, 2]) }
     });
 
-    const program = new Program(gl, {
+    let program;
+    try {
+      program = new Program(gl, {
       vertex: vertexShader,
       fragment: fragmentShader,
       uniforms: {
@@ -304,9 +409,16 @@ function FaultyTerminal({
         uUsePageLoadAnimation: { value: pageLoadAnimation ? 1 : 0 },
         uBrightness: { value: brightness }
       }
-    });
-
-    programRef.current = program;
+      });
+      programRef.current = program;
+    } catch (err) {
+      console.error('[hero-terminal] Shader/program compile failed, falling back to 2D canvas', err);
+      fallbackCleanup = create2DFallback(container, tint);
+      // if program creation failed, stop initialization early
+      return () => {
+        if (typeof fallbackCleanup === 'function') fallbackCleanup();
+      };
+    }
 
     const mesh = new Mesh(gl, { geometry, program });
     container.appendChild(gl.canvas);
@@ -315,20 +427,30 @@ function FaultyTerminal({
     gl.canvas.style.display = 'block';
 
     const resize = () => {
-      renderer.setSize(container.offsetWidth, container.offsetHeight);
-      program.uniforms.iResolution.value = new Color(
-        gl.canvas.width,
-        gl.canvas.height,
-        gl.canvas.width / gl.canvas.height
-      );
+      if (renderer && renderer.setSize) {
+        renderer.setSize(container.offsetWidth, container.offsetHeight);
+        program.uniforms.iResolution.value = new Color(
+          gl.canvas.width,
+          gl.canvas.height,
+          gl.canvas.width / gl.canvas.height
+        );
+      }
     };
 
     const resizeObserver = new ResizeObserver(() => resize());
     resizeObserver.observe(container);
     resize();
 
+    // FPS throttling: full RAF on desktop, limited on mobile
+    const minFrameInterval = smallScreen ? (1000 / 30) : (1000 / 60);
+    let lastRenderTime = 0;
+
     const update = now => {
       rafRef.current = requestAnimationFrame(update);
+
+      // throttle rendering to target FPS
+      if (now - lastRenderTime < minFrameInterval) return;
+      lastRenderTime = now;
 
       if (pageLoadAnimation && loadAnimationStartRef.current === 0) {
         loadAnimationStartRef.current = now;
@@ -349,7 +471,8 @@ function FaultyTerminal({
         program.uniforms.uPageLoadProgress.value = progress;
       }
 
-      if (mouseReact) {
+      // update mouse uniform only if mouse interactions are enabled and device is not touch
+      if (mouseReact && !isTouchDevice) {
         const dampingFactor = 0.08;
         const smoothMouse = smoothMouseRef.current;
         const mouse = mouseRef.current;
@@ -366,14 +489,15 @@ function FaultyTerminal({
 
     rafRef.current = requestAnimationFrame(update);
 
-    if (mouseReact) container.addEventListener('mousemove', handleMouseMove);
+    if (mouseReact && !isTouchDevice && fallbackCleanup === null) container.addEventListener('mousemove', handleMouseMove);
 
     return () => {
       cancelAnimationFrame(rafRef.current);
       resizeObserver.disconnect();
-      if (mouseReact) container.removeEventListener('mousemove', handleMouseMove);
-      if (gl.canvas.parentElement === container) container.removeChild(gl.canvas);
-      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      if (mouseReact && !isTouchDevice && fallbackCleanup === null) container.removeEventListener('mousemove', handleMouseMove);
+      if (gl && gl.canvas && gl.canvas.parentElement === container) container.removeChild(gl.canvas);
+      if (gl) gl.getExtension('WEBGL_lose_context')?.loseContext();
+      if (typeof fallbackCleanup === 'function') fallbackCleanup();
       loadAnimationStartRef.current = 0;
       timeOffsetRef.current = Math.random() * 100;
     };
@@ -409,6 +533,8 @@ function FaultyTerminal({
 
 const host = document.getElementById('heroTerminal');
 
+if (!host) console.error('[hero-terminal] mount target #heroTerminal not found');
+
 if (host) {
   const root = createRoot(host);
   root.render(
@@ -416,20 +542,20 @@ if (host) {
       scale: 1.5,
       gridMul: [2, 1],
       digitSize: 1.2,
-      timeScale: 0.5,
+      timeScale: 1,
       pause: false,
-      scanlineIntensity: 0.5,
-      glitchAmount: 1,
+      scanlineIntensity: 1,
       flickerAmount: 1,
       noiseAmp: 1,
       chromaticAberration: 0,
       dither: 0,
-      curvature: 0.1,
-      tint: '#38bdf8',
+      curvature: 0,
+      tint: '#0066ff',
       mouseReact: true,
       mouseStrength: 0.5,
-      pageLoadAnimation: true,
-      brightness: 0.6,
+      pageLoadAnimation: false,
+      brightness: 0.3,
+      glitchAmount: 1,
       style: { width: '100%', height: '100%' }
     })
   );

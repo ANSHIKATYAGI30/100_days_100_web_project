@@ -294,7 +294,7 @@ body.light-mode .navbar {
     inset: 0;
     z-index: 0;
     pointer-events: none;
-    opacity: 0.3;
+    opacity: 0.55;
     mix-blend-mode: normal;
     overflow: hidden;
     background:
@@ -525,20 +525,23 @@ body.light-mode .navbar {
 /* Filter chips */
 .filter-chips {
     display: flex;
-    gap: 0.5rem;
+    gap: 0.4rem;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .chip {
     display: inline-flex;
     align-items: center;
-    gap: 0.35rem;
-    padding: 0.35rem 0.875rem;
-    font-family: 'Inter Tight', sans-serif;
-    font-size: 0.75rem;
-    font-weight: 500;
+    gap: 0.25rem;
+    padding: 0.22rem 0.6rem;
+    font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, 'Courier New', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    line-height: 1;
     border: 1px solid var(--border);
-    border-radius: 100px;
+    border-radius: var(--radius-sm);
     background: transparent;
     color: var(--text-muted);
     cursor: pointer;
@@ -548,13 +551,15 @@ body.light-mode .navbar {
 .chip:hover {
     border-color: var(--border-hover);
     color: var(--text-secondary);
-    background: var(--bg-surface);
+    background: rgba(255,255,255,0.01);
 }
 
 .chip.active {
     background: var(--accent-dim);
     border-color: var(--border-accent);
     color: var(--accent);
+    box-shadow: 0 4px 14px rgba(59,130,246,0.06);
+    text-shadow: 0 0 6px rgba(59,130,246,0.06);
 }
 
 .chip-count {
