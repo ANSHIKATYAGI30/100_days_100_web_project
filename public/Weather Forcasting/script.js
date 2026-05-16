@@ -142,9 +142,6 @@ async function loadTableCities() {
 
 //  Search button click
 submit.addEventListener("click", (e) => {
-    e.preventDefault()
-    getWeather(city.value)
-})
 
 // ⌨ Enter key triggers search
 city.addEventListener("keydown", (e) => {
