@@ -36,9 +36,11 @@ dotenv	Environment Variables
 
 📂 Project Structure
 
-mern-login-form/ 
-│   
-├── backend/                                                                                                                                                                 
+# 📂 Project Structure
+
+```text
+mern-login-form/
+├── backend/
 │   ├── config/
 │   │   └── db.js
 │   │
@@ -59,21 +61,29 @@ mern-login-form/
 │   └── package.json
 │
 ├── frontend/
+│   ├── public/
+│   │   └── Main/
+│   │       ├── logo.png
+│   │       └── banner.jpg
+│   │
 │   ├── src/
+│   │   ├── components/
+│   │   │   └── Navbar.jsx
+│   │   │
 │   │   ├── pages/
 │   │   │   ├── Login.jsx
 │   │   │   ├── Register.jsx
 │   │   │   └── Dashboard.jsx
-│   │   │
-│   │   ├── components/
-│   │   │   └── Navbar.jsx
 │   │   │
 │   │   ├── App.js
 │   │   └── main.jsx
 │   │
 │   └── package.json
 │
-└── README.md
+├── .gitignore
+├── README.md
+└── package.json
+```
 
 ⚙️ Installation & Setup
 
