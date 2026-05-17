@@ -310,6 +310,7 @@ function fillTable() {
         ["Day 112", "Nykaa Clone Website", "./public/Nykaa-clone/index.html"],
         ["Day 113", "CPU Scheduler", "./public/CpuScheduler/index.html"] feature/pagination-project-list
         ["Day 114", "EchoNotes", "./public/EchoNotes/index.html"]
+        ["Day 115", "Mini Calendar", "./public/Mini_Calendar/index.html"]
     ];
 
         ["Day 114","EchoNotes","./public/EchoNotes/idex.html"],
