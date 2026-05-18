@@ -8,8 +8,6 @@ if (typeof REPO_OWNER === 'undefined') {
 window.REPO_OWNER = window.REPO_OWNER || 'dhairyagothi';
 window.REPO_NAME = window.REPO_NAME || '100_days_100_web_project';
 
-
-
 let currentPage = 1;
 const itemsPerPage = 10;
 let projectData = [];
@@ -18,450 +16,72 @@ let currentCategory = 'all';
 let currentDifficulty = 'all';
 
 const PROJECT_DATA = [
-  [
-    'Day 1',
-    'To-Do List',
-    './public/TO_DO_LIST/todolist.html',
-    'javascript todo',
-    'beginner',
-  ],
-  [
-    'Day 2',
-    'Digital Clock',
-    './public/digital_clock/digitalclock.html',
-    'javascript',
-    'beginner',
-  ],
+  ['Day 1', 'To-Do List', './public/TO_DO_LIST/todolist.html', 'javascript todo', 'beginner'],
+  ['Day 2', 'Digital Clock', './public/digital_clock/digitalclock.html', 'javascript', 'beginner'],
   ['Day 3', 'Indian Flag', './public/indianflag/flag.html', 'css', 'beginner'],
-  [
-    'Day 4',
-    'Dropdown Nav Bar',
-    './public/dropdown_navbar/index.html',
-    'css',
-    'beginner',
-  ],
-  [
-    'Day 5',
-    'Animated Cursor',
-    './public/Animated-cursor/animated-cursor.html',
-    'javascript css',
-    'beginner',
-  ],
-  [
-    'Day 6',
-    'Auto Background Image Slider',
-    './public/Background-Image-sider/slider.html',
-    'javascript',
-    'beginner',
-  ],
-  [
-    'Day 7',
-    'Typewriter',
-    './public/typewriter/typewriter.html',
-    'javascript',
-    'beginner',
-  ],
-  [
-    'Day 8',
-    'Parallel-X Website',
-    './public/Parallel-x%20website/parallal.html',
-    'css',
-    'intermediate',
-  ],
-  [
-    'Day 9',
-    'Captcha Generator',
-    './public/captcha/captcha.html',
-    'javascript',
-    'intermediate',
-  ],
-  [
-    'Day 10',
-    'QR Code Generator',
-    './public/qr%20generator/qr.html',
-    'api javascript',
-    'intermediate',
-  ],
-  [
-    'Day 11',
-    'Serve Website Using Express',
-    './public/index.html',
-    'javascript',
-    'intermediate',
-  ],
-  [
-    'Day 12',
-    'Nodemailer Contact Form',
-    './public/gmail_nodemailer/public/mail.html',
-    'api javascript',
-    'intermediate',
-  ],
-  [
-    'Day 13',
-    'Login Form Using MERN',
-    'https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/loginusingmern',
-    'api javascript',
-    'intermediate',
-  ],
-  [
-    'Day 14',
-    'File Uploader',
-    'https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/file_uploader',
-    'javascript',
-    'intermediate',
-  ],
-  [
-    'Day 15',
-    'Progress Bar',
-    './public/progress_bar/progress_bar.html',
-    'css javascript',
-    'beginner',
-  ],
-  [
-    'Day 16',
-    'Scroll Bar CSS',
-    './public/Scroll Game Dark Run/index.html',
-    'css',
-    'beginner',
-  ],
-  [
-    'Day 17',
-    'Slider Using Swiper API',
-    './public/slider%20box/index.html',
-    'api javascript',
-    'intermediate',
-  ],
-  [
-    'Day 18',
-    'Carousel Solar System',
-    './public/carousal/index.html',
-    'css canvas',
-    'intermediate',
-  ],
+  ['Day 4', 'Dropdown Nav Bar', './public/dropdown_navbar/index.html', 'css', 'beginner'],
+  ['Day 5', 'Animated Cursor', './public/Animated-cursor/animated-cursor.html', 'javascript css', 'beginner'],
+  ['Day 6', 'Auto Background Image Slider', './public/Background-Image-sider/slider.html', 'javascript', 'beginner'],
+  ['Day 7', 'Typewriter', './public/typewriter/typewriter.html', 'javascript', 'beginner'],
+  ['Day 8', 'Parallel-X Website', './public/Parallel-x%20website/parallal.html', 'css', 'intermediate'],
+  ['Day 9', 'Captcha Generator', './public/captcha/captcha.html', 'javascript', 'intermediate'],
+  ['Day 10', 'QR Code Generator', './public/qr%20generator/qr.html', 'api javascript', 'intermediate'],
+  ['Day 11', 'Serve Website Using Express', './public/index.html', 'javascript', 'intermediate'],
+  ['Day 12', 'Nodemailer Contact Form', './public/gmail_nodemailer/public/mail.html', 'api javascript', 'intermediate'],
+  ['Day 13', 'Login Form Using MERN', 'https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/loginusingmern', 'api javascript', 'intermediate'],
+  ['Day 14', 'File Uploader', 'https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/file_uploader', 'javascript', 'intermediate'],
+  ['Day 15', 'Progress Bar', './public/progress_bar/progress_bar.html', 'css javascript', 'beginner'],
+  ['Day 16', 'Scroll Bar CSS', './public/Scroll Game Dark Run/index.html', 'css', 'beginner'],
+  ['Day 17', 'Slider Using Swiper API', './public/slider%20box/index.html', 'api javascript', 'intermediate'],
+  ['Day 18', 'Carousel Solar System', './public/carousal/index.html', 'css canvas', 'intermediate'],
   ['Day 19', 'Planto', './public/plantwebsite/plant.html', 'css', 'beginner'],
-  [
-    'Day 20',
-    'EveSparks',
-    'https://evesparks.onrender.com/',
-    'javascript',
-    'intermediate',
-  ],
-  [
-    'Day 21',
-    'Video BG Slider Using React',
-    'https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/travel_website',
-    'javascript',
-    'intermediate',
-  ],
-  [
-    'Day 22',
-    'Page Loader',
-    './public/pageloader/pageloader.html',
-    'css',
-    'beginner',
-  ],
-  [
-    'Day 23',
-    'Jarvis Virtual Assistant',
-    './public/Jarvis-AI-main/index.html',
-    'api javascript',
-    'intermediate',
-  ],
-  [
-    'Day 24',
-    'Chat Bot',
-    './public/AI%20ChatBot/chatbot.html',
-    'api javascript',
-    'intermediate',
-  ],
-  [
-    'Day 25',
-    'Tic-Tac-Toe',
-    './public/TicTacToe/index.html',
-    'game javascript',
-    'beginner',
-  ],
-  [
-    'Day 26',
-    'Maze Game',
-    './public/Maze-Game-main/index.html',
-    'game javascript',
-    'intermediate',
-  ],
-  [
-    'Day 27',
-    'Memory Game',
-    './public/MemoryGame/index.html',
-    'game javascript',
-    'beginner',
-  ],
-  [
-    'Day 28',
-    'Wordle',
-    './public/WORDLE/index.html',
-    'game javascript',
-    'intermediate',
-  ],
-  [
-    'Day 29',
-    'Snake Game',
-    './public/snake_game/index.html',
-    'game javascript',
-    'beginner',
-  ],
-  [
-    'Day 30',
-    'Flappy-bird-game',
-    './public/Flappy-bird-main/index.html',
-    'game canvas',
-    'intermediate',
-  ],
-  [
-    'Day 31',
-    'Password Manager',
-    './public/password%20manager/index.html',
-    'javascript',
-    'intermediate',
-  ],
-  [
-    'Day 32',
-    'Missionaries & Cannibals',
-    './public/Missionaries&Cannibals/index.html',
-    'game javascript',
-    'intermediate',
-  ],
-  [
-    'Day 33',
-    'Weather Forecasting',
-    './public/Weather%20Forcasting/index.html',
-    'weather api',
-    'intermediate',
-  ],
-  [
-    'Day 34',
-    'Email Validator',
-    './public/email%20validator/index.html',
-    'api javascript',
-    'beginner',
-  ],
-  [
-    'Day 35',
-    'Vanilla-JavaScript-Calculator',
-    './public/Vanilla-JavaScript-Calculator-master/index.html',
-    'javascript',
-    'beginner',
-  ],
-  [
-    'Day 36',
-    'Medical App',
-    './public/Medical_App/index.html',
-    'javascript',
-    'intermediate',
-  ],
-  [
-    'Day 37',
-    '2048 Game',
-    './public/2048_game/index.html',
-    'game javascript',
-    'intermediate',
-  ],
-  [
-    'Day 38',
-    'Github Profile Finder',
-    'https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/github_profile_finder',
-    'api javascript',
-    'intermediate',
-  ],
-  [
-    'Day 39',
-    'Notes App',
-    './public/notes-app/index.html',
-    'todo javascript',
-    'beginner',
-  ],
-  [
-    'Day 40',
-    'Analog Clock',
-    './public/AnalogClock/index.html',
-    'javascript css',
-    'beginner',
-  ],
-  [
-    'Day 41',
-    'Scroll Dark Game',
-    './public/Scroll%20Game%20Dark%20Run/index.html',
-    'game canvas',
-    'intermediate',
-  ],
-  [
-    'Day 42',
-    'Amazon App',
-    './public/Amazon_Clone/index.html',
-    'javascript',
-    'intermediate',
-  ],
-  [
-    'Day 43',
-    'Password Generator',
-    './public/Password_Generator/index.html',
-    'javascript',
-    'beginner',
-  ],
-  [
-    'Day 44',
-    'BMI Calculator',
-    './public/BMI_Calculator/index.html',
-    'javascript',
-    'beginner',
-  ],
-  [
-    'Day 45',
-    'Black Jack',
-    './public/BlackJack/blackJ.html',
-    'game javascript',
-    'intermediate',
-  ],
-  [
-    'Day 46',
-    'Palindrome Generator',
-    './public/Palindrome_Generator/index.html',
-    'javascript',
-    'beginner',
-  ],
-  [
-    'Day 47',
-    'Ping Pong Game',
-    './public/ping/index.html',
-    'game canvas',
-    'intermediate',
-  ],
-  [
-    'Day 48',
-    'TextToVoiceConverter',
-    './public/TextToVoiceConverter/index.html',
-    'api javascript',
-    'intermediate',
-  ],
-  [
-    'Day 49',
-    'Url Shortener',
-    'https://github.com/chandankoranga02/100_days_100_web_project/tree/Main/public/url_shortener',
-    'api javascript',
-    'intermediate',
-  ],
-  [
-    'Day 50',
-    'Recipe Genie',
-    'https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/Recipe%20Genie',
-    'api javascript',
-    'intermediate',
-  ],
-  [
-    'Day 51',
-    'Netflix Landing Page Clone',
-    './public/Netflix_Cloning/Index.html',
-    'css',
-    'beginner',
-  ],
-  [
-    'Day 52',
-    'ClimaCode',
-    './public/ClimaCode%202.0/index.html',
-    'weather api',
-    'intermediate',
-  ],
-  [
-    'Day 53',
-    'E-Commerce Website with Simple Cart Functionality',
-    './public/e-commerce_cart/index.html',
-    'javascript',
-    'intermediate',
-  ],
-  [
-    'Day 54',
-    'Budget Tracker',
-    './public/Budget%20Tracker/index.html',
-    'todo javascript',
-    'intermediate',
-  ],
-  [
-    'Day 55',
-    'Cricket Game',
-    './public/cricket/index.html',
-    'game javascript',
-    'intermediate',
-  ],
-  [
-    'Day 56',
-    'Pastebin using svelte',
-    'https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/pastebin',
-    'javascript',
-    'intermediate',
-  ],
-  [
-    'Day 57',
-    'Glowing Social Media Icons',
-    './public/Social%20Media%20Glowing/index.html',
-    'css',
-    'beginner',
-  ],
-  [
-    'Day 58',
-    'Music App',
-    './public/Music%20App/index.html',
-    'api javascript',
-    'intermediate',
-  ],
+  ['Day 20', 'EveSparks', 'https://evesparks.onrender.com/', 'javascript', 'intermediate'],
+  ['Day 21', 'Video BG Slider Using React', 'https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/travel_website', 'javascript', 'intermediate'],
+  ['Day 22', 'Page Loader', './public/pageloader/pageloader.html', 'css', 'beginner'],
+  ['Day 23', 'Jarvis Virtual Assistant', './public/Jarvis-AI-main/index.html', 'api javascript', 'intermediate'],
+  ['Day 24', 'Chat Bot', './public/AI%20ChatBot/chatbot.html', 'api javascript', 'intermediate'],
+  ['Day 25', 'Tic-Tac-Toe', './public/TicTacToe/index.html', 'game javascript', 'beginner'],
+  ['Day 26', 'Maze Game', './public/Maze-Game-main/index.html', 'game javascript', 'intermediate'],
+  ['Day 27', 'Memory Game', './public/MemoryGame/index.html', 'game javascript', 'beginner'],
+  ['Day 28', 'Wordle', './public/WORDLE/index.html', 'game javascript', 'intermediate'],
+  ['Day 29', 'Snake Game', './public/snake_game/index.html', 'game javascript', 'beginner'],
+  ['Day 30', 'Flappy-bird-game', './public/Flappy-bird-main/index.html', 'game canvas', 'intermediate'],
+  ['Day 31', 'Password Manager', './public/password%20manager/index.html', 'javascript', 'intermediate'],
+  ['Day 32', 'Missionaries & Cannibals', './public/Missionaries&Cannibals/index.html', 'game javascript', 'intermediate'],
+  ['Day 33', 'Weather Forecasting', './public/Weather%20Forcasting/index.html', 'weather api', 'intermediate'],
+  ['Day 34', 'Email Validator', './public/email%20validator/index.html', 'api javascript', 'beginner'],
+  ['Day 35', 'Vanilla-JavaScript-Calculator', './public/Vanilla-JavaScript-Calculator-master/index.html', 'javascript', 'beginner'],
+  ['Day 36', 'Medical App', './public/Medical_App/index.html', 'javascript', 'intermediate'],
+  ['Day 37', '2048 Game', './public/2048_game/index.html', 'game javascript', 'intermediate'],
+  ['Day 38', 'Github Profile Finder', 'https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/github_profile_finder', 'api javascript', 'intermediate'],
+  ['Day 39', 'Notes App', './public/notes-app/index.html', 'todo javascript', 'beginner'],
+  ['Day 40', 'Analog Clock', './public/AnalogClock/index.html', 'javascript css', 'beginner'],
+  ['Day 41', 'Scroll Dark Game', './public/Scroll%20Game%20Dark%20Run/index.html', 'game canvas', 'intermediate'],
+  ['Day 42', 'Amazon App', './public/Amazon_Clone/index.html', 'javascript', 'intermediate'],
+  ['Day 43', 'Password Generator', './public/Password_Generator/index.html', 'javascript', 'beginner'],
+  ['Day 44', 'BMI Calculator', './public/BMI_Calculator/index.html', 'javascript', 'beginner'],
+  ['Day 45', 'Black Jack', './public/BlackJack/blackJ.html', 'game javascript', 'intermediate'],
+  ['Day 46', 'Palindrome Generator', './public/Palindrome_Generator/index.html', 'javascript', 'beginner'],
+  ['Day 47', 'Ping Pong Game', './public/ping/index.html', 'game canvas', 'intermediate'],
+  ['Day 48', 'TextToVoiceConverter', './public/TextToVoiceConverter/index.html', 'api javascript', 'intermediate'],
+  ['Day 49', 'Url Shortener', 'https://github.com/chandankoranga02/100_days_100_web_project/tree/Main/public/url_shortener', 'api javascript', 'intermediate'],
+  ['Day 50', 'Recipe Genie', 'https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/Recipe%20Genie', 'api javascript', 'intermediate'],
+  ['Day 51', 'Netflix Landing Page Clone', './public/Netflix_Cloning/Index.html', 'css', 'beginner'],
+  ['Day 52', 'ClimaCode', './public/ClimaCode%202.0/index.html', 'weather api', 'intermediate'],
+  ['Day 53', 'E-Commerce Website with Simple Cart Functionality', './public/e-commerce_cart/index.html', 'javascript', 'intermediate'],
+  ['Day 54', 'Budget Tracker', './public/Budget%20Tracker/index.html', 'todo javascript', 'intermediate'],
+  ['Day 55', 'Cricket Game', './public/cricket/index.html', 'game javascript', 'intermediate'],
+  ['Day 56', 'Pastebin using svelte', 'https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/pastebin', 'javascript', 'intermediate'],
+  ['Day 57', 'Glowing Social Media Icons', './public/Social%20Media%20Glowing/index.html', 'css', 'beginner'],
+  ['Day 58', 'Music App', './public/Music%20App/index.html', 'api javascript', 'intermediate'],
   ['Day 59', 'Blog Page', './public/Blog%20Page/index.html', 'css', 'beginner'],
-  [
-    'Day 60',
-    'Marketing template website',
-    './public/marketing_website/index.html',
-    'css',
-    'beginner',
-  ],
-  [
-    'Day 61',
-    'Hologram Button',
-    './public/Holo%20Button/index.html',
-    'css',
-    'beginner',
-  ],
-  [
-    'Day 62',
-    'Solar System Explorer',
-    './public/Solar%20System%20Explorer%20in%20CSS%20only%20haml/template.html',
-    'css',
-    'intermediate',
-  ],
-  [
-    'Day 63',
-    'Image to Text App',
-    './public/Image-To-Text-App/index.html',
-    'api javascript',
-    'intermediate',
-  ],
-  [
-    'Day 64',
-    'Zomato-clone',
-    './public/zomato-clone/zomato.html',
-    'css',
-    'beginner',
-  ],
-  [
-    'Day 65',
-    'The Cube',
-    './public/The%20Cube/index.html',
-    'canvas css',
-    'intermediate',
-  ],
-  [
-    'Day 66',
-    'Flask Authentication App',
-    'https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/flask_auth_app',
-    'api javascript',
-    'intermediate',
-  ],
+  ['Day 60', 'Marketing template website', './public/marketing_website/index.html', 'css', 'beginner'],
+  ['Day 61', 'Hologram Button', './public/Holo%20Button/index.html', 'css', 'beginner'],
+  ['Day 62', 'Solar System Explorer', './public/Solar%20System%20Explorer%20in%20CSS%20only%20haml/template.html', 'css', 'intermediate'],
+  ['Day 63', 'Image to Text App', './public/Image-To-Text-App/index.html', 'api javascript', 'intermediate'],
+  ['Day 64', 'Zomato-clone', './public/zomato-clone/zomato.html', 'css', 'beginner'],
+  ['Day 65', 'The Cube', './public/The%20Cube/index.html', 'canvas css', 'intermediate'],
+  ['Day 66', 'Flask Authentication App', 'https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/flask_auth_app', 'api javascript', 'intermediate'],
   ['Day 67', 'Blog-Website', './public/blog/main.html', 'css', 'beginner'],
   [
     'Day 68',
@@ -825,9 +445,7 @@ console.log('PROJECTS defined:', PROJECTS.length, 'items');
    BOOKMARK + RECENT SYSTEM
 ============================================================ */
 
-let bookmarkedProjects =
-  JSON.parse(localStorage.getItem('bookmarkedProjects')) || [];
-
+let bookmarkedProjects = JSON.parse(localStorage.getItem('bookmarkedProjects')) || [];
 let recentProjects = JSON.parse(localStorage.getItem('recentProjects')) || [];
 
 let showAllBookmarks = false;
@@ -842,18 +460,14 @@ const CATEGORY_LABEL = {
 };
 console.log('CATEGORY_LABEL defined:', CATEGORY_LABEL);
 
-// ============================================
-// 2. GITHUB REPO STATS
-// ============================================
+/* ============================================================
+   GITHUB REPO STATS
+   ============================================================ */
 async function fetchRepoStats() {
   try {
     const [repoRes, prRes] = await Promise.all([
-      fetch(
-        `https://api.github.com/repos/${window.REPO_OWNER}/${window.REPO_NAME}`
-      ),
-      fetch(
-        `https://api.github.com/search/issues?q=repo:${window.REPO_OWNER}/${window.REPO_NAME}+type:pr+state:open`
-      ),
+      fetch(`https://api.github.com/repos/${window.REPO_OWNER}/${window.REPO_NAME}`),
+      fetch(`https://api.github.com/search/issues?q=repo:${window.REPO_OWNER}/${window.REPO_NAME}+type:pr+state:open`),
     ]);
     if (!repoRes.ok || !prRes.ok) throw new Error('Stats fetch failed');
     const repo = await repoRes.json();
@@ -872,22 +486,16 @@ async function fetchRepoStats() {
   }
 }
 
-// NOTE (difficulty): Generating content client-side must sanitize URLs and
-// avoid heavy sync work; large project lists may block the main thread.
-
 function generateReadme() {
   try {
     const lines = [];
     lines.push('# 100 Days · 100 Web Projects');
-    lines.push(
-      'A curated archive of frontend experiments — browse, fork, contribute.'
-    );
+    lines.push('A curated archive of frontend experiments — browse, fork, contribute.');
     lines.push('');
     lines.push('## Projects');
     PROJECTS.forEach(([day, name, url, tags, cat]) => {
       const safeUrl = url || '';
-      const tagList = (tags || []).join(', ');
-      lines.push(`- **${day} — ${name}** — ${safeUrl} — _${cat}_ — ${tagList}`);
+      lines.push(`- **${day} — ${name}** — ${safeUrl} — _${cat}_`);
     });
 
     const blob = new Blob([lines.join('\n')], { type: 'text/markdown' });
@@ -918,8 +526,7 @@ function renderGrid() {
   const filtered = PROJECTS.filter(([day, name, , , cat]) => {
     const matchesFilter = activeFilter === 'all' || cat === activeFilter;
     const q = searchQuery.toLowerCase();
-    const matchesSearch =
-      !q || name.toLowerCase().includes(q) || day.toLowerCase().includes(q);
+    const matchesSearch = !q || name.toLowerCase().includes(q) || day.toLowerCase().includes(q);
     return matchesFilter && matchesSearch;
   });
 
@@ -938,11 +545,8 @@ function renderGrid() {
     const card = document.createElement('div');
     card.className = 'project-card';
     const isBookmarked = bookmarkedProjects.some((item) => item[0] === day);
-    const tagsArray =
-      typeof tags === 'string' ? tags.split(/\s+/).filter((t) => t) : tags;
-    const tagsHTML = tagsArray
-      .map((t) => `<span class="tag">${t}</span>`)
-      .join('');
+    const tagsArray = typeof tags === 'string' ? tags.split(/\s+/).filter((t) => t) : tags;
+    const tagsHTML = tagsArray.map((t) => `<span class="tag">${t}</span>`).join('');
 
     card.innerHTML = `
             <div class="card-meta">
@@ -952,24 +556,13 @@ function renderGrid() {
             <div class="card-name">${name}</div>
             <div class="card-tags">${tagsHTML}</div>
             <div class="card-footer">
-
-            <a href="${url.trim()}"
-               target="_blank"
-               class="card-link open-project"
-               data-id="${day}"
-               rel="noopener noreferrer">
-
-                View Demo <i class="fas fa-arrow-right"></i>
-            </a>
-
-            <button class="bookmark-btn ${isBookmarked ? 'active' : ''}"
-                    data-id="${day}">
-
-                <i class="${isBookmarked ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
-
-            </button>  
-
-        </div>
+                <a href="${url.trim()}" target="_blank" class="card-link open-project" data-id="${day}" rel="noopener noreferrer">
+                    View Demo <i class="fas fa-arrow-right"></i>
+                </a>
+                <button class="bookmark-btn ${isBookmarked ? 'active' : ''}" data-id="${day}">
+                    <i class="${isBookmarked ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
+                </button>
+            </div>
         `;
 
     grid.appendChild(card);
@@ -980,22 +573,14 @@ function toggleBookmark(project) {
   const exists = bookmarkedProjects.find((item) => item[0] === project[0]);
 
   if (exists) {
-    bookmarkedProjects = bookmarkedProjects.filter(
-      (item) => item[0] !== project[0]
-    );
-
+    bookmarkedProjects = bookmarkedProjects.filter((item) => item[0] !== project[0]);
     showToast('Bookmark removed');
   } else {
     bookmarkedProjects.push(project);
-
     showToast('Project bookmarked');
   }
 
-  localStorage.setItem(
-    'bookmarkedProjects',
-    JSON.stringify(bookmarkedProjects)
-  );
-
+  localStorage.setItem('bookmarkedProjects', JSON.stringify(bookmarkedProjects));
   renderBookmarks();
   renderGrid();
   renderRecentProjects();
@@ -1003,7 +588,6 @@ function toggleBookmark(project) {
 
 function trackRecentProject(project) {
   recentProjects = recentProjects.filter((item) => item[0] !== project[0]);
-
   recentProjects.unshift(project);
 
   if (recentProjects.length > 10) {
@@ -1011,7 +595,6 @@ function trackRecentProject(project) {
   }
 
   localStorage.setItem('recentProjects', JSON.stringify(recentProjects));
-
   renderRecentProjects();
 }
 
@@ -1023,69 +606,37 @@ function renderBookmarks() {
   bookmarkGrid.innerHTML = '';
 
   if (bookmarkedProjects.length === 0) {
-    bookmarkGrid.innerHTML = `
-            <p class="empty-state">
-                No bookmarked projects yet.
-            </p>
-        `;
-
+    bookmarkGrid.innerHTML = `<p class="empty-state">No bookmarked projects yet.</p>`;
     return;
   }
 
+  const bookmarkToggleBtn = document.getElementById('bookmarkToggleBtn');
   if (bookmarkToggleBtn) {
-    bookmarkToggleBtn.style.display =
-      bookmarkedProjects.length <= INITIAL_VISIBLE_ITEMS
-        ? 'none'
-        : 'inline-flex';
+    bookmarkToggleBtn.style.display = bookmarkedProjects.length <= INITIAL_VISIBLE_ITEMS ? 'none' : 'inline-flex';
   }
 
-  const visibleBookmarks = showAllBookmarks
-    ? bookmarkedProjects
-    : bookmarkedProjects.slice(0, INITIAL_VISIBLE_ITEMS);
+  const visibleBookmarks = showAllBookmarks ? bookmarkedProjects : bookmarkedProjects.slice(0, INITIAL_VISIBLE_ITEMS);
 
   visibleBookmarks.forEach(([day, name, url, tags, cat]) => {
     const card = document.createElement('div');
-
     card.className = 'project-card';
-
-    const tagsHTML = tags
-      .split(' ')
-      .map((tag) => `<span class="tag">${tag}</span>`)
-      .join('');
+    const tagsHTML = tags.split(' ').map((tag) => `<span class="tag">${tag}</span>`).join('');
 
     card.innerHTML = `
             <div class="card-meta">
                 <span class="card-day">${day}</span>
-
-                <span class="card-category">
-                    ${CATEGORY_LABEL[cat]}
-                </span>
+                <span class="card-category">${CATEGORY_LABEL[cat]}</span>
             </div>
-
             <div class="card-name">${name}</div>
-
-            <div class="card-tags">
-                ${tagsHTML}
+            <div class="card-tags">${tagsHTML}</div>
+            <div class="card-footer">
+                <a href="${url}" target="_blank" class="card-link open-project" data-id="${day}">
+                    View Demo <i class="fas fa-arrow-right"></i>
+                </a>
+                <button class="bookmark-btn active" data-id="${day}">
+                    <i class="fa-solid fa-bookmark"></i>
+                </button>
             </div>
-
-           <div class="card-footer">
-
-   <a href="${url}"
-   target="_blank"
-   class="card-link open-project"
-   data-id="${day}">
-
-        View Demo
-        <i class="fas fa-arrow-right"></i>
-    </a>
-
-    <button class="bookmark-btn active"
-            data-id="${day}">
-
-        <i class="fa-solid fa-bookmark"></i>
-    </button>
-
-</div>
         `;
 
     bookmarkGrid.appendChild(card);
@@ -1100,86 +651,55 @@ function renderRecentProjects() {
   recentGrid.innerHTML = '';
 
   if (recentProjects.length === 0) {
-    recentGrid.innerHTML = `
-            <p class="empty-state">
-                No recently viewed projects.
-            </p>
-        `;
-
+    recentGrid.innerHTML = `<p class="empty-state">No recently viewed projects.</p>`;
     return;
   }
 
+  const recentToggleBtn = document.getElementById('recentToggleBtn');
   if (recentToggleBtn) {
-    recentToggleBtn.style.display =
-      recentProjects.length <= INITIAL_VISIBLE_ITEMS ? 'none' : 'inline-flex';
+    recentToggleBtn.style.display = recentProjects.length <= INITIAL_VISIBLE_ITEMS ? 'none' : 'inline-flex';
   }
 
-  const visibleRecent = showAllRecent
-    ? recentProjects
-    : recentProjects.slice(0, INITIAL_VISIBLE_ITEMS);
+  const visibleRecent = showAllRecent ? recentProjects : recentProjects.slice(0, INITIAL_VISIBLE_ITEMS);
 
   visibleRecent.forEach(([day, name, url, tags, cat]) => {
     const card = document.createElement('div');
-
     card.className = 'project-card';
-
-    const tagsHTML = tags
-      .split(' ')
-      .map((tag) => `<span class="tag">${tag}</span>`)
-      .join('');
+    const tagsHTML = tags.split(' ').map((tag) => `<span class="tag">${tag}</span>`).join('');
     const isBookmarked = bookmarkedProjects.some((item) => item[0] === day);
+
     card.innerHTML = `
-    <div class="card-meta">
-        <span class="card-day">${day}</span>
+            <div class="card-meta">
+                <span class="card-day">${day}</span>
+                <span class="card-category">${CATEGORY_LABEL[cat]}</span>
+            </div>
+            <div class="card-name">${name}</div>
+            <div class="card-tags">${tagsHTML}</div>
+            <div class="card-footer">
+                <a href="${url}" target="_blank" class="card-link open-project" data-id="${day}">
+                    View Demo <i class="fas fa-arrow-right"></i>
+                </a>
+                <button class="bookmark-btn ${isBookmarked ? 'active' : ''}" data-id="${day}">
+                    <i class="${isBookmarked ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
+                </button>
+            </div>
+        `;
 
-        <span class="card-category">
-            ${CATEGORY_LABEL[cat]}
-        </span>
-    </div>
-
-    <div class="card-name">${name}</div>
-
-    <div class="card-tags">
-        ${tagsHTML}
-    </div>
-
-    <div class="card-footer">
-
-        <a href="${url}"
-           target="_blank"
-           class="card-link open-project"
-           data-id="${day}">
-
-            View Demo
-            <i class="fas fa-arrow-right"></i>
-        </a>
-
-        <button class="bookmark-btn ${isBookmarked ? 'active' : ''}"
-                data-id="${day}">
-
-            <i class="${isBookmarked ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
-        </button>
-
-    </div>
-`;
     recentGrid.appendChild(card);
   });
 }
 
-/* ============================================
+/* ============================================================
    VIEW ALL TOGGLE
-============================================ */
+   ============================================================ */
 
 const bookmarkToggleBtn = document.getElementById('bookmarkToggleBtn');
-
 const recentToggleBtn = document.getElementById('recentToggleBtn');
 
 if (bookmarkToggleBtn) {
   bookmarkToggleBtn.addEventListener('click', () => {
     showAllBookmarks = !showAllBookmarks;
-
     bookmarkToggleBtn.textContent = showAllBookmarks ? 'Show Less' : 'View All';
-
     renderBookmarks();
   });
 }
@@ -1187,18 +707,14 @@ if (bookmarkToggleBtn) {
 if (recentToggleBtn) {
   recentToggleBtn.addEventListener('click', () => {
     showAllRecent = !showAllRecent;
-
     recentToggleBtn.textContent = showAllRecent ? 'Show Less' : 'View All';
-
     renderRecentProjects();
   });
 }
 
 function showToast(message) {
   const toast = document.getElementById('toast');
-
   toast.textContent = message;
-
   toast.classList.add('show');
 
   setTimeout(() => {
@@ -1208,27 +724,20 @@ function showToast(message) {
 
 document.addEventListener('click', (e) => {
   const bookmarkBtn = e.target.closest('.bookmark-btn');
-
   if (!bookmarkBtn) return;
 
   e.preventDefault();
-
   const projectDay = bookmarkBtn.dataset.id;
-
   const project = PROJECTS.find((item) => item[0] === projectDay);
-
   toggleBookmark(project);
 });
 
 document.addEventListener('click', (e) => {
   const projectLink = e.target.closest('.open-project');
-
   if (!projectLink) return;
 
   const projectDay = projectLink.dataset.id;
-
   const project = PROJECTS.find((item) => item[0] === projectDay);
-
   if (!project) return;
 
   trackRecentProject(project);
@@ -1263,10 +772,7 @@ function initSearch() {
 
 function syncProjectCounts() {
   const total = PROJECTS.length.toLocaleString();
-  const countNodes = [
-    document.getElementById('projectCount'),
-    document.getElementById('allCount'),
-  ];
+  const countNodes = [document.getElementById('projectCount'), document.getElementById('allCount')];
 
   countNodes.forEach((node) => {
     if (node) node.textContent = total;
@@ -1288,7 +794,6 @@ function updateNavbar() {
   const username = window.username || null;
   const isRoot = !window.location.pathname.includes('/contributors/');
   const base = isRoot ? '' : '../';
-  const isDark = !document.body.classList.contains('light-mode');
 
   if (username) {
     container.innerHTML = `
@@ -1332,13 +837,13 @@ function initTheme() {
 
   if (saved === 'light') {
     document.body.classList.add('light-mode');
-    icon.className = 'fas fa-sun';
+    if (icon) icon.className = 'fas fa-sun';
   }
 
   btn.addEventListener('click', () => {
     document.body.classList.toggle('light-mode');
     const isLight = document.body.classList.contains('light-mode');
-    icon.className = isLight ? 'fas fa-sun' : 'fas fa-moon';
+    if (icon) icon.className = isLight ? 'fas fa-sun' : 'fas fa-moon';
     localStorage.setItem('theme', isLight ? 'light' : 'dark');
   });
 }
@@ -1360,15 +865,30 @@ function initScrollBtn() {
 }
 
 /* ============================================================
+   BACK TO TOP BUTTON
+   ============================================================ */
+const backToTopButton = document.getElementById('backToTop');
+
+if (backToTopButton) {
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 200) {
+      backToTopButton.style.display = 'block';
+    } else {
+      backToTopButton.style.display = 'none';
+    }
+  });
+
+  backToTopButton.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+}
+
+/* ============================================================
    INIT
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   console.log('DOMContentLoaded fired');
-  console.log(
-    'PROJECTS:',
-    typeof PROJECTS,
-    PROJECTS ? PROJECTS.length : 'undefined'
-  );
+  console.log('PROJECTS:', typeof PROJECTS, PROJECTS ? PROJECTS.length : 'undefined');
   initTheme();
   updateNavbar();
   initFilterChips();
@@ -1379,21 +899,4 @@ document.addEventListener('DOMContentLoaded', () => {
   renderRecentProjects();
   fetchRepoStats();
   initScrollBtn();
-});
-
-const backToTopButton = document.getElementById("backToTop");
-
-window.addEventListener("scroll", () => {
-    if (window.scrollY > 200) {
-        backToTopButton.style.display = "block";
-    } else {
-        backToTopButton.style.display = "none";
-    }
-});
-
-backToTopButton.addEventListener("click", () => {
-    window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-    });
 });
