@@ -1052,6 +1052,20 @@ main {
   color: #ff8080;
 }
 
+.task-card.editing,
+.notes.editing {
+  border: 2px solid var(--accent);
+  box-shadow: 0 0 15px rgba(245, 200, 66, 0.35);
+  transition: all 0.2s ease;
+}
+
+.task-text[contenteditable='true'] {
+  cursor: text;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 4px;
+  border-radius: 4px;
+}
+
 .action-row {
   display: flex;
   justify-content: flex-end;
