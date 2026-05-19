@@ -8,29 +8,33 @@ const taskTypeSelect = document.getElementById("task-type");
 // ─── Theme State ───────────────────────────────────────────────────────────────
 // Maps theme id → gradient for body + card fallback colour for default cards
 const THEMES = {
-  theme1: {
-    body: "linear-gradient(135deg, rgba(232,221,227,1) 0%, rgba(219,185,200,1) 55%, rgba(227,230,235,1) 100%)",
-    card: "rgba(232, 221, 227, 1)",
+  sunset: {
+    body: "linear-gradient(135deg, #3b0764, #6b21a8)",
+    card: "#8b5fbf",
   },
-  theme2: {
-    body: "linear-gradient(135deg, #e4afcb 0%, #e2c58b 50%, #7edbdc 100%)",
-    card: "#e4afcb",
+
+  ocean: {
+    body: "linear-gradient(135deg, #021b79, #0575e6)",
+    card: "#4d8df7",
   },
-  theme3: {
-    body: "linear-gradient(135deg, #39db8c 0%, #a0c559 30%, #d1ab51 55%, #e6936b 80%, #df868d 100%)",
-    card: "#df868d",
+
+  forest: {
+    body: "linear-gradient(135deg, #134e5e, #71b280)",
+    card: "#65a88f",
   },
-  theme4: {
-    body: "linear-gradient(135deg, rgb(120,25,105) 0%, rgb(197,211,201) 100%)",
-    card: "rgb(197, 211, 201)",
+
+  midnight: {
+    body: "linear-gradient(135deg, #232526, #414345)",
+    card: "#5c5f61",
   },
-  theme5: {
-    body: "linear-gradient(135deg, #b92b27 0%, #1565c0 100%)",
-    card: "#c0cfe8",
+
+  aurora: {
+    body: "linear-gradient(135deg, #00c9a7, #845ec2)",
+    card: "#57c5b6",
   },
 };
 
-let currentTheme = "theme1"; // default
+let currentTheme = "sunset"; // default
 
 // ─── Task Type colour map ──────────────────────────────────────────────────────
 // Keeps track of user-chosen type colours so they survive theme switches
@@ -180,11 +184,7 @@ function applyTheme(themeKey) {
   });
 }
 
-function c1() { applyTheme("theme1"); }
-function c2() { applyTheme("theme2"); }
-function c3() { applyTheme("theme3"); }
-function c4() { applyTheme("theme4"); }
-function c5() { applyTheme("theme5"); }
+
 
 // ─── PDF Export ────────────────────────────────────────────────────────────────
 function saveAsPDF() {
