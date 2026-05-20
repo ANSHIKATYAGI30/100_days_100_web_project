@@ -81,12 +81,12 @@ Celestial-Solar-System/
 
 ## 🌐 Demo & Repository
 
-🔗 Live Demo: [https://your-live-demo-link.com](https://your-live-demo-link.com)
+🔗 Live Demo: [https://100-days-100-web-project-5sit.vercel.app/](https://100-days-100-web-project-5sit.vercel.app/)
 
-🔗 GitHub Repository: [https://github.com/your-username/celestial-solar-system](https://github.com/your-username/celestial-solar-system)
+🔗 GitHub Repository: [https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/Carousel%20Solar%20System](https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/Carousel%20Solar%20System)
 
 ```bash
-git clone https://github.com/your-username/celestial-solar-system.git
+git https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/Carousel%20Solar%20System.git
 ```
 
 ---
@@ -106,13 +106,24 @@ The website works smoothly on:
 
 1. Clone the repository:
 
-```bash
-git clone https://github.com/your-username/celestial-solar-system.git
-```
+   - **My Fork (with updated README and Code):**
+     ```bash
+     git clone https://github.com/gayatridot/100_days_100_web_project.git
+     ```
+     Navigate to:
+     [Carousel Solar System (Fork)](https://github.com/gayatridot/100_days_100_web_project/tree/fix/carousel-solar-system/public/Carousel%20Solar%20System)
 
-2. Open the project folder.
-3. Open `index.html` in your browser.
-4. Explore the Solar System.
+   - **Upstream Maintainer’s Repo:**
+     ```bash
+     git clone https://github.com/dhairyagothi/100_days_100_web_project.git
+     ```
+     Navigate to:
+     [Carousel Solar System (Upstream)](https://github.com/dhairyagothi/100_days_100_web_project/tree/Main/public/Carousel%20Solar%20System)
+
+2. Open the project folder.  
+3. Open `index.html` in your browser.  
+4. Explore the Solar System 🚀  
+5. (Optional) Try the **Live Demo**: [Solar System Carousel](https://100-days-100-web-project-5sit.vercel.app/)
 
 ---
 
