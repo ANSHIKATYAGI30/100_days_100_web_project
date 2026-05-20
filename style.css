@@ -1195,32 +1195,94 @@ body.light-mode .navbar {
    SCROLL TO TOP
    ============================================================ */
 #scrollBtn {
-  position: fixed;
-  bottom: 2rem;
-  right: 2rem;
-  width: 40px;
-  height: 40px;
-  background: var(--bg-elevated);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-md);
-  color: var(--text-muted);
-  font-size: 0.875rem;
-  cursor: pointer;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  transition: var(--t);
-  z-index: 50;
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    width: 48px;
+    height: 48px;
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transform: translateY(16px);
+    pointer-events: none;
+    transition: opacity 0.3s var(--ease), transform 0.3s var(--ease),
+                border-color 0.2s ease, color 0.2s ease;
+    z-index: 50;
 }
 
 #scrollBtn.show {
-  display: flex;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
 }
 
 #scrollBtn:hover {
-  border-color: var(--border-accent);
-  color: var(--accent);
-  transform: translateY(-2px);
+    border-color: var(--border-accent);
+    color: var(--accent);
+}
+
+#scrollBtn:hover .scroll-arrow {
+    transform: translateY(-2px);
+}
+
+#scrollBtn .scroll-arrow {
+    transition: transform 0.2s var(--ease);
+    position: relative;
+    z-index: 1;
+}
+
+#scrollBtn svg.progress-ring {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 48px;
+    height: 48px;
+    transform: rotate(-90deg);
+    pointer-events: none;
+}
+
+#scrollBtn svg.progress-ring .ring-track {
+    fill: none;
+    stroke: var(--border);
+    stroke-width: 2;
+}
+
+#scrollBtn svg.progress-ring .ring-fill {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-dasharray: 138.2;
+    stroke-dashoffset: 138.2;
+    transition: stroke-dashoffset 0.1s linear;
+}
+
+#scrollBtn .scroll-tooltip {
+    position: absolute;
+    bottom: 54px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-elevated);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 4px 10px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    color: var(--text-secondary);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+}
+
+#scrollBtn:hover .scroll-tooltip {
+    opacity: 1;
 }
 
 /* ============================================================
@@ -1551,28 +1613,6 @@ body.light-mode .pagination-controls button.page-num.active {
     text-align: center;
     font-size: 0.8rem;
   }
-}
-
-#backToTop {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    display: none;
-    background-color: #000;
-    color: white;
-    border: none;
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    font-size: 22px;
-    cursor: pointer;
-    z-index: 1000;
-    transition: all 0.3s ease;
-}
-
-#backToTop:hover {
-    background-color: #333;
-    transform: scale(1.1);
 }
 
 /* ============================================================

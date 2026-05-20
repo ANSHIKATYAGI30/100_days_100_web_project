@@ -148,7 +148,7 @@ const PROJECT_DATA = [
   ['Day 129', 'YouTube Clone', './public/youtube clone/index.html', 'Html CSS', 'beginner'],
   ['Day 130', 'Dino Game', './public/DinoGame/DinoGame-main/index.html', 'game javascript', 'beginner'],
   ["Day 131", "Retro Highway Racer", "/public/RetroHighwayRacer/index.html", 'game javascript', 'intermediate'],
-    ['Day 132', 'Pokedex', './public/Pokedex/index.html', 'utility', 'intermediate'],
+  ['Day 132', 'Pokedex', './public/Pokedex/index.html', 'utility', 'intermediate'],
   ['Day 133', 'Stock Market Simulator', './public/stock-market-simulator/index.html', 'simulator', 'intermediate'],
   ['Day 134', 'Coin Scratch', './public/Coin Scratch/index.html', 'asmr game', 'intermediate'],
   ['Day 135', 'Sudoku Solver', './public/sudoku-solver/index.html', 'game javascript', 'intermediate'],
@@ -830,16 +830,27 @@ function initTheme() {
    SCROLL TO TOP
    ============================================================ */
 function initScrollBtn() {
-  const btn = document.getElementById('scrollBtn');
-  if (!btn) return;
+    const btn = document.getElementById('scrollBtn');
+    const ring = document.getElementById('ringFill');
+    if (!btn) return;
 
-  window.addEventListener('scroll', () => {
-    btn.classList.toggle('show', window.scrollY > 400);
-  });
+    const circumference = 2 * Math.PI * 22;
 
-  btn.addEventListener('click', () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  });
+    window.addEventListener('scroll', () => {
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+
+        btn.classList.toggle('show', scrollTop > 400);
+
+        if (ring) {
+            ring.style.strokeDashoffset = circumference * (1 - progress);
+        }
+    });
+
+    btn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
 }
 
 /* ============================================================

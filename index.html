@@ -254,10 +254,14 @@
     </footer>
 
     <!-- ── SCROLL TO TOP ──────────────────────────────────── -->
-    <button id="scrollBtn" aria-label="Scroll to top">
-      <i class="fas fa-arrow-up"></i>
-    </button>
-
+   <button id="scrollBtn" aria-label="Back to top">
+    <svg class="progress-ring" viewBox="0 0 48 48">
+        <circle class="ring-track" cx="24" cy="24" r="22"/>
+        <circle class="ring-fill" id="ringFill" cx="24" cy="24" r="22"/>
+    </svg>
+    <i class="fas fa-arrow-up scroll-arrow"></i>
+    <span class="scroll-tooltip">Back to top</span>
+</button>
     <div class="toast" id="toast"></div>
     <script type="module" src="hero-terminal.js"></script>
     <script src="index.js"></script>
