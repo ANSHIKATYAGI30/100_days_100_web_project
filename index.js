@@ -149,6 +149,9 @@ const PROJECT_DATA = [
   ['Day 130', 'Dino Game', './public/DinoGame/DinoGame-main/index.html', 'game javascript', 'beginner'],
   ["Day 131", "Retro Highway Racer", "/public/RetroHighwayRacer/index.html", 'game javascript', 'intermediate'],
   ['Day 132', 'Pokedex', './public/Pokedex/index.html', 'utility', 'intermediate']
+  ['Day 133', 'Sudoku Solver', './public/sudoku-solver/index.html', 'game javascript', 'intermediate'],
+['Day 134', 'Maths Quiz Game', './public/maths-quiz-game/index.html', 'game javascript', 'intermediate'],
+['Day 135', 'Age Calculator', './public/age-calculator/index.html', 'tool javascript', 'beginner']
 ];
 
 // Alias for consistency
