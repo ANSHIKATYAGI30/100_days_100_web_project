@@ -302,7 +302,7 @@ function downloadBackupAsSpreadsheet() {
     const url = window.URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.setAttribute('href', url);
-    a.setAttribute('download', `BudgetBuddy_Backup_${new Date().toISOString().slice(0, 10)}.csv`);
+    a.setAttribute('download', `ExpenseTracker_Backup_${new Date().toISOString().slice(0, 10)}.csv`);
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
