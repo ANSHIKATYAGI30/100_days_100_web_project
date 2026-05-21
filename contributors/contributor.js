@@ -10,6 +10,12 @@ const certificateBody = document.getElementById('certificateBody');
 
 const closeCertificate = document.getElementById('closeCertificate');
 
+const GITHUB_API_BASE = 'https://api.github.com';
+
+const REQUEST_TIMEOUT = 10000;
+
+const MAX_RETRIES = 3;
+
 closeModal?.addEventListener(
   'click',
 
@@ -17,6 +23,68 @@ closeModal?.addEventListener(
     modal.style.display = 'none';
   }
 );
+
+async function githubFetch(url, options = {}, retries = MAX_RETRIES) {
+  const controller = new AbortController();
+
+  const timeoutId = setTimeout(() => {
+    controller.abort();
+  }, REQUEST_TIMEOUT);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal,
+      headers: {
+        Accept: 'application/vnd.github+json',
+      },
+    });
+
+    clearTimeout(timeoutId);
+
+    if (response.status === 403) {
+      const resetTime = response.headers.get('X-RateLimit-Reset');
+
+      let message = 'GitHub API rate limit exceeded.';
+
+      if (resetTime) {
+        const resetDate = new Date(resetTime * 1000);
+
+        message += ` Try again after ${resetDate.toLocaleTimeString()}`;
+      }
+
+      throw new Error(message);
+    }
+
+    if (!response.ok) {
+      throw new Error(`GitHub API Error (${response.status})`);
+    }
+
+    const data = await response.json();
+
+    if (!data) {
+      throw new Error('Empty response received');
+    }
+
+    return data;
+  } catch (error) {
+    clearTimeout(timeoutId);
+
+    if (retries > 0) {
+      return githubFetch(url, options, retries - 1);
+    }
+
+    if (error.name === 'AbortError') {
+      throw new Error('Request timeout. Please try again.');
+    }
+
+    if (error instanceof TypeError) {
+      throw new Error('Network error. Check your internet connection.');
+    }
+
+    throw error;
+  }
+}
 
 window.addEventListener(
   'click',
@@ -366,81 +434,35 @@ function renderContributors(data) {
 
   const fragment = document.createDocumentFragment();
 
-  data.forEach(
-
-(contributor)=> {
+  data.forEach((contributor) => {
     const card = document.createElement('div');
 
     const globalRank =
+      allContributors.findIndex((c) => c.login === contributor.login) + 1;
 
-allContributors.findIndex(
+    let badge = '';
 
-c =>
-
-c.login ===
-contributor.login
-
-) + 1;
-
-
-let badge='';
-
-
-if(globalRank===1){
-
-badge=
-'assets/badges/diamond.png';
-
-}
-
-else if(
-
-globalRank>=2 &&
-globalRank<=3
-
-){
-
-badge=
-'assets/badges/gold.png';
-
-}
-
-else if(
-
-globalRank>=4 &&
-globalRank<=6
-
-){
-
-badge=
-'assets/badges/silver.png';
-
-}
-
-else if(
-
-globalRank>=7 &&
-globalRank<=10
-
-){
-
-badge=
-'assets/badges/bronze.png';
-
-}
+    if (globalRank === 1) {
+      badge = 'assets/badges/diamond.png';
+    } else if (globalRank >= 2 && globalRank <= 3) {
+      badge = 'assets/badges/gold.png';
+    } else if (globalRank >= 4 && globalRank <= 6) {
+      badge = 'assets/badges/silver.png';
+    } else if (globalRank >= 7 && globalRank <= 10) {
+      badge = 'assets/badges/bronze.png';
+    }
 
     card.className = 'contributor-card';
 
     card.innerHTML = `
 
-${badge
-?
-`<img
+${
+  badge
+    ? `<img
 src="${badge}"
 class="rank-badge"
 >`
-:
-''
+    : ''
 }
 
 <img
@@ -500,12 +522,10 @@ alt="${contributor.login}">
 
         () => {
           openProfile(
+            contributor.login,
 
-contributor.login,
-
-contributor.contributions
-
-);
+            contributor.contributions
+          );
         }
       );
     }
