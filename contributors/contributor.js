@@ -670,6 +670,15 @@ document.addEventListener('DOMContentLoaded', () => {
   // Repo stats are now handled by index.js
   fetchContributors();
   fetchStargazers();
+  
+  document
+    .getElementById('retryContributors')
+    ?.addEventListener('click', fetchContributors);
+
+  document
+    .getElementById('retryStargazers')
+    ?.addEventListener('click', fetchStargazers);
+
   const searchInput = document.getElementById('contributorSearch');
 
   const sortSelect = document.getElementById('sortContributors');
