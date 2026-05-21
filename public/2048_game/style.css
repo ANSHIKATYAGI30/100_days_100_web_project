@@ -92,6 +92,7 @@ body {
   }
   #restartBtn {
   margin-left: 10px;
+  transition: background-color 0.3s ease;
   padding: 10px 20px;
   border: none;
   border-radius: 8px;

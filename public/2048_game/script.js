@@ -54,10 +54,10 @@ document.addEventListener("DOMContentLoaded", () => {
         let zeros = Array(missing).fill(0);
         let newRow = zeros.concat(filteredRow);
 
-        squares[i].innerHTML = newRow[0];
-        squares[i + 1].innerHTML = newRow[1];
-        squares[i + 2].innerHTML = newRow[2];
-        squares[i + 3].innerHTML = newRow[3];
+        updateTile(squares[i], newRow[0]);
+        updateTile(squares[i + 1], newRow[1]);
+        updateTile(squares[i + 2], newRow[2]);
+        updateTile(squares[i + 3], newRow[3]);
       }
     }
   }
@@ -76,14 +76,14 @@ document.addEventListener("DOMContentLoaded", () => {
         let zeros = Array(missing).fill(0);
         let newRow = filteredRow.concat(zeros);
 
-        squares[i].innerHTML = newRow[0];
-        squares[i + 1].innerHTML = newRow[1];
-        squares[i + 2].innerHTML = newRow[2];
-        squares[i + 3].innerHTML = newRow[3];
+        updateTile(squares[i], newRow[0]);
+        updateTile(squares[i + 1], newRow[1]);
+        updateTile(squares[i + 2], newRow[2]);
+        updateTile(squares[i + 3], newRow[3]);
       }
     }
   }
-
+  
   function sumRow() {
     for (let i = 0; i < 15; i++) {
       if(i % 4 == 3) continue;
@@ -111,10 +111,10 @@ document.addEventListener("DOMContentLoaded", () => {
       let zeros = Array(missing).fill(0);
       let newColumn = zeros.concat(filteredColumn);
 
-      squares[i].innerHTML = newColumn[0];
-      squares[i + 4].innerHTML = newColumn[1];
-      squares[i + 4 * 2].innerHTML = newColumn[2];
-      squares[i + 4 * 3].innerHTML = newColumn[3];
+      updateTile(squares[i], newColumn[0]);
+      updateTile(squares[i + 4], newColumn[1]);
+      updateTile(squares[i + 4 * 2], newColumn[2]);
+      updateTile(squares[i + 4 * 3], newColumn[3]);
     }
   }
 
@@ -131,10 +131,10 @@ document.addEventListener("DOMContentLoaded", () => {
       let zeros = Array(missing).fill(0);
       let newColumn = filteredColumn.concat(zeros);
 
-      squares[i].innerHTML = newColumn[0];
-      squares[i + 4].innerHTML = newColumn[1];
-      squares[i + 4 * 2].innerHTML = newColumn[2];
-      squares[i + 4 * 3].innerHTML = newColumn[3];
+      updateTile(squares[i], newColumn[0]);
+      updateTile(squares[i + 4], newColumn[1]);
+      updateTile(squares[i + 4 * 2], newColumn[2]);
+      updateTile(squares[i + 4 * 3], newColumn[3]);
     }
   }
 
@@ -167,9 +167,9 @@ document.addEventListener("DOMContentLoaded", () => {
   restartBtn.addEventListener('click', restartGame);
 
   function updateTile(square, value) {
-  square.innerHTML = value === 0 ? '' : value;
-  square.setAttribute('data-value', value);
-}
+    square.innerHTML = value === 0 ? '' : value;
+    square.setAttribute('data-value', value);
+  }
 
   function keyRight() {
     moveRight();
@@ -202,7 +202,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function checkWin() {
     for (let i = 0; i < 16; i++) {
       if (squares[i].innerHTML == 2048) {
-        alert("Congratulations!! Refresh the page to play again.");
+        alert("Congratulations!! Click restart to play again.");
         document.removeEventListener("keyup", control);
       }
     }
@@ -216,7 +216,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
     if (numZeros === 0) {
-      alert("Game Over!! Refresh the page to play again.");
+     alert("Game Over!! Click restart to try again.");
       document.removeEventListener("keyup", control);
     }
   }
