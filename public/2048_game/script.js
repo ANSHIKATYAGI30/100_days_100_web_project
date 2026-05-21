@@ -60,6 +60,7 @@ let GAP      = 10;      // gap between tiles
 let PAD      = 12;      // board padding
 
 let board, score, best, prevBoard, prevScore;
+let reviveChance = 1;  
 let moves    = 0;
 let combo    = 0;
 let over     = false;
@@ -247,6 +248,11 @@ function doMove (dir) {
 
   if (isLost()) {
     over = true;
+    showToast(
+      reviveChance > 0
+      ? `Chance left: ${reviveChance}`
+      : 'No chances left'
+    );
     if (mode === 'timed') clearInterval(timerInterval);
     stats.games++;
     stats.best = Math.max(stats.best, score);
@@ -283,6 +289,8 @@ function init (resume = false) {
     combo    = 0;
     over     = false;
     won      = false;
+
+    reviveChance = 1; 
     prevBoard = null;
     prevScore = 0;
     addTile();
@@ -626,18 +634,38 @@ document.getElementById('nb').addEventListener('click', () => {
 });
 
 document.getElementById('ub').addEventListener('click', () => {
-  if (!prevBoard) { showToast('Nothing to undo'); return; }
-  board     = prevBoard;
-  score     = prevScore;
-  prevBoard = null;
-  moves     = Math.max(0, moves - 1);
-  over      = false;
-  won       = false;
-  renderBoard();
-  renderTiles();
-  updateUI();
-  document.getElementById('ov').style.display = 'none';
-  showToast('Undone!');
+
+    if (!prevBoard) {
+        showToast('Nothing to undo');
+        return;
+    }
+    // BLOCK extra revive after game over
+    if (over && reviveChance <= 0) {
+        showToast('No chances left. Restart game');
+        return;
+    }
+
+    board = prevBoard;
+    score = prevScore;
+    prevBoard = null;
+
+    moves = Math.max(0, moves - 1);
+    // user used revive chance 
+    if (over) {
+        reviveChance--;
+    }
+    over = false;
+    won = false;
+
+    renderBoard();
+    renderTiles();
+    updateUI();
+    document.getElementById('ov').style.display='none';
+    showToast(
+        reviveChance === 0
+        ? 'Chance left: 0'
+        : 'Undone!'
+    );
 });
 
 document.getElementById('tb').addEventListener('click', () => {
