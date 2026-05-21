@@ -1,249 +1,140 @@
-const qrType = document.getElementById('qr-type');
-const inputText = document.getElementById('inputtext');
+const copyBtn = document.getElementById("copy-btn");
+const message = document.getElementById("message");
 
-const wifiInputs = document.getElementById('wifi-inputs');
-const vcardInputs = document.getElementById('vcard-inputs');
+const qrType = document.getElementById("qr-type");
+const themeBtns = document.querySelectorAll(".theme-btn");
 
-const qrColor = document.getElementById('qr-color');
-const qrShape = document.getElementById('qr-shape');
+const inputText = document.getElementById("inputtext");
+const inputLabel = document.getElementById("main-input-label");
 
-const errorCorrection = document.getElementById('error-correction');
+const wifiInputs = document.getElementById("wifi-inputs");
+const vcardInputs = document.getElementById("vcard-inputs");
 
-const generateBtn = document.querySelector('.submit');
+const qrColor = document.getElementById("qr-color");
+const qrShape = document.getElementById("qr-shape");
+const errorCorrection = document.getElementById("error-correction");
+const logoUpload = document.getElementById("logo-upload");
 
-const qrcodeDiv = document.getElementById('qrcode');
+const generateBtn = document.querySelector(".submit");
+const qrcodeDiv = document.getElementById("qrcode");
 
-const downloadBtn = document.getElementById('download-qr');
+const downloadBtn = document.getElementById("download-qr");
+const scanBtn = document.getElementById("scan-qr");
 
-const scanBtn = document.getElementById('scan-qr');
+const qrReaderResults = document.getElementById("qr-reader-results");
+const statusMessage = document.getElementById("status-message");
 
-const qrReader = document.getElementById('qr-reader');
+const wifiSSID = document.getElementById("wifi-ssid");
+const wifiPassword = document.getElementById("wifi-password");
+const wifiEncryption = document.getElementById("wifi-encryption");
 
-const qrReaderResults =
-document.getElementById('qr-reader-results');
+const vcardName = document.getElementById("vcard-name");
+const vcardPhone = document.getElementById("vcard-phone");
+const vcardEmail = document.getElementById("vcard-email");
+const vcardWebsite = document.getElementById("vcard-website");
 
-let qrcode = null;
+let lastGeneratedData = "";
+let currentTheme = "aurora";
 
-/* INPUT FIELDS */
+const themeColors = {
+    aurora: "#a78bfa",
+    neon: "#00ff88",
+    dark: "#d4d4d4",
+    candy: "#e91e8c"
+};
 
-function updateInputFields(){
-
-    const selectedType = qrType.value;
-
-    inputText.style.display =
-    (selectedType === 'text' ||
-    selectedType === 'url')
-    ? 'block'
-    : 'none';
-
-    wifiInputs.style.display =
-    selectedType === 'wifi'
-    ? 'block'
-    : 'none';
-
-    vcardInputs.style.display =
-    selectedType === 'vcard'
-    ? 'block'
-    : 'none';
+function setStatus(msg, error = false) {
+    statusMessage.textContent = msg;
+    statusMessage.style.color = error ? "red" : "";
 }
 
-qrType.addEventListener('change',
-updateInputFields);
+function escapeText(text) {
+    return text.replace(/\\/g, "\\\\").replace(/;/g, "\\;").replace(/,/g, "\\,");
+}
 
-/* GENERATE QR */
-function generateQRCode(){
+function updateInputFields() {
+    const type = qrType.value;
 
-    qrcodeDiv.innerHTML = '';
+    inputText.style.display = (type === "text" || type === "url") ? "block" : "none";
+    inputLabel.style.display = (type === "text" || type === "url") ? "block" : "none";
 
-    let data = '';
+    wifiInputs.style.display = type === "wifi" ? "block" : "none";
+    vcardInputs.style.display = type === "vcard" ? "block" : "none";
+}
 
-    switch(qrType.value){
+function collectQrData() {
+    const type = qrType.value;
 
-        case 'text':
-        case 'url':
-            data = inputText.value;
-            break;
+    if (type === "text") return { data: inputText.value.trim() };
+    if (type === "url") return { data: inputText.value.trim() };
 
-        case 'wifi':
+    if (type === "wifi") {
+        const ssid = wifiSSID.value.trim();
+        const pass = wifiPassword.value;
+        const enc = wifiEncryption.value;
+        return { data: `WIFI:T:${enc};S:${ssid};P:${pass};;` };
+    }
 
-            const ssid =
-            document.getElementById('wifi-ssid').value;
-
-            const password =
-            document.getElementById('wifi-password').value;
-
-            const encryption =
-            document.getElementById('wifi-encryption').value;
-
-            data =
-            `WIFI:T:${encryption};S:${ssid};P:${password};;`;
-
-            break;
-
-        case 'vcard':
-
-            const name =
-            document.getElementById('vcard-name').value;
-
-            const phone =
-            document.getElementById('vcard-phone').value;
-
-            const email =
-            document.getElementById('vcard-email').value;
-
-            const website =
-            document.getElementById('vcard-website').value;
-
-            data =
+    if (type === "vcard") {
+        return {
+            data:
 `BEGIN:VCARD
 VERSION:3.0
-N:${name}
-TEL:${phone}
-EMAIL:${email}
-URL:${website}
-END:VCARD`;
-
-            break;
+FN:${vcardName.value}
+TEL:${vcardPhone.value}
+EMAIL:${vcardEmail.value}
+URL:${vcardWebsite.value}
+END:VCARD`
+        };
     }
 
-    if(data.trim() !== ''){
-
-        qrcode = new QRCode(qrcodeDiv,{
-            text:data,
-            width:220,
-            height:220,
-            colorDark:qrColor.value,
-            colorLight:"#ffffff",
-            correctLevel:
-            QRCode.CorrectLevel[errorCorrection.value]
-        });
-
-        setTimeout(()=>{
-
-            const qrImage =
-            qrcodeDiv.querySelector('img');
-
-            const qrCanvas =
-            qrcodeDiv.querySelector('canvas');
-
-            if(qrShape.value === 'rounded'){
-
-                if(qrImage){
-                    qrImage.style.borderRadius = '15px';
-                }
-
-                if(qrCanvas){
-                    qrCanvas.style.borderRadius = '15px';
-                }
-            }
-
-        },200);
-    }
+    return { error: "Invalid type" };
 }
 
-generateBtn.addEventListener('click',
-generateQRCode);
+function generateQRCode() {
+    qrcodeDiv.innerHTML = "";
 
-/* DOWNLOAD */
-
-downloadBtn.addEventListener('click',()=>{
-
-    const qrImage =
-    qrcodeDiv.querySelector('img');
-
-    const qrCanvas =
-    qrcodeDiv.querySelector('canvas');
-
-    const link =
-    document.createElement('a');
-
-    link.download = 'qrcode.png';
-
-    if(qrImage){
-        link.href = qrImage.src;
-    }
-
-    else if(qrCanvas){
-        link.href = qrCanvas.toDataURL();
-    }
-
-    else{
-        alert("Generate QR Code first");
+    const result = collectQrData();
+    if (result.error) {
+        setStatus(result.error, true);
         return;
     }
 
-    link.click();
-});
-/* SCAN */
+    lastGeneratedData = result.data;
 
-scanBtn.addEventListener('click',()=>{
-
-    if(qrReader.style.display === 'none'){
-
-        qrReader.style.display = 'block';
-
-        const html5QrCode =
-        new Html5Qrcode("qr-reader");
-
-        html5QrCode.start(
-            { facingMode:"environment" },
-            { qrbox:250 },
-
-            (decodedText)=>{
-
-                qrReaderResults.innerHTML =
-                `<p>Decoded QR: ${decodedText}</p>`;
-
-                html5QrCode.stop();
-
-                qrReader.style.display = 'none';
-            }
-        );
-
-    }else{
-
-        qrReader.style.display = 'none';
-    }
-});
-
-/* THEME SWITCHER */
-
-const themeButtons =
-document.querySelectorAll('.theme-btn');
-
-themeButtons.forEach(button=>{
-
-    button.addEventListener('click',()=>{
-
-        const selectedTheme =
-        button.dataset.theme;
-
-        document.body.setAttribute(
-            'data-theme',
-            selectedTheme
-        );
-
-        localStorage.setItem(
-            'selectedTheme',
-            selectedTheme
-        );
+    new QRCode(qrcodeDiv, {
+        text: result.data,
+        width: 200,
+        height: 200,
+        colorDark: qrColor.value,
+        colorLight: "#fff",
+        correctLevel: QRCode.CorrectLevel[errorCorrection.value]
     });
+
+    setStatus("QR generated");
+}
+
+qrType.addEventListener("change", updateInputFields);
+
+generateBtn.addEventListener("click", generateQRCode);
+
+downloadBtn.addEventListener("click", () => {
+    const img = qrcodeDiv.querySelector("img");
+    if (!img) return;
+
+    const a = document.createElement("a");
+    a.download = "qr.png";
+    a.href = img.src;
+    a.click();
 });
 
-/* LOAD SAVED THEME */
-
-window.addEventListener('DOMContentLoaded',()=>{
-
-    const savedTheme =
-    localStorage.getItem('selectedTheme');
-
-    if(savedTheme){
-
-        document.body.setAttribute(
-            'data-theme',
-            savedTheme
-        );
-    }
-
-    updateInputFields();
+scanBtn.addEventListener("click", () => {
+    qrReaderResults.innerHTML = `<pre>${lastGeneratedData}</pre>`;
 });
+
+copyBtn.addEventListener("click", () => {
+    navigator.clipboard.writeText(inputText.value);
+    message.innerText = "Copied!";
+});
+
+updateInputFields();
