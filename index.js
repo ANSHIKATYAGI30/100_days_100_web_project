@@ -151,9 +151,10 @@ const PROJECT_DATA = [
   ['Day 132', 'Pokedex', './public/Pokedex/index.html', 'utility', 'intermediate'],
   ['Day 133', 'Stock Market Simulator', './public/stock-market-simulator/index.html', 'simulator', 'intermediate'],
   ['Day 134', 'Coin Scratch', './public/Coin Scratch/index.html', 'asmr game', 'intermediate'],
-  ['Day 135', 'Sudoku Solver', './public/sudoku-solver/index.html', 'game javascript', 'intermediate'],
-  ['Day 136', 'Maths Quiz Game', './public/maths-quiz-game/index.html', 'game javascript', 'intermediate'],
-  ['Day 137', 'Age Calculator', './public/age-calculator/index.html', 'tool javascript', 'beginner']
+  ['Day 135', 'Shooting game', './public/shooting game/index.html', '2d game', 'intermediate'],
+  ['Day 136', 'Sudoku Solver', './public/sudoku-solver/index.html', 'game javascript', 'intermediate'],
+  ['Day 137', 'Maths Quiz Game', './public/maths-quiz-game/index.html', 'game javascript', 'intermediate'],
+  ['Day 138', 'Age Calculator', './public/age-calculator/index.html', 'tool javascript', 'beginner']
 ];
 // Alias for consistency
 const PROJECTS = PROJECT_DATA;
