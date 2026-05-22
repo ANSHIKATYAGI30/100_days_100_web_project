@@ -852,6 +852,8 @@ if (recentToggleBtn) {
 
 function showToast(message) {
   const toast = document.getElementById('toast');
+  if (!toast) return;
+
   toast.textContent = message;
   toast.classList.add('show');
 
@@ -867,6 +869,8 @@ document.addEventListener('click', (e) => {
   e.preventDefault();
   const projectDay = bookmarkBtn.dataset.id;
   const project = PROJECTS.find((item) => item[0] === projectDay);
+  if (!project) return;
+
   toggleBookmark(project);
 });
 
@@ -1122,20 +1126,27 @@ function initScrollBtn() {
 /* ============================================================
    INIT
    ============================================================ */
+function hasProjectGrid() {
+  return Boolean(document.getElementById('projectGrid'));
+}
+
 document.addEventListener('DOMContentLoaded', () => {
   getAllTechnologies();
 
   initTheme();
   updateNavbar();
-  initFilterChips();
-  initSearch();
-  initTechStackSearch(); // Initialize tech stack search
   syncProjectCounts();
-  renderGrid();
-  renderBookmarks();
-  renderRecentProjects();
   fetchRepoStats();
   initScrollBtn();
+
+  if (hasProjectGrid()) {
+    initFilterChips();
+    initSearch();
+    initTechStackSearch();
+    renderGrid();
+    renderBookmarks();
+    renderRecentProjects();
+  }
 });
 
 
@@ -1179,7 +1190,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Re-render the grid when the browser window is resized to adapt pagination density instantly
 window.addEventListener('resize', () => {
-  renderGrid();
+  if (hasProjectGrid()) {
+    renderGrid();
+  }
 });
 
 /* ============================================================
