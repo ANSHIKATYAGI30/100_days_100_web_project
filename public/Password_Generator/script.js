@@ -1,11 +1,11 @@
 const warningMsg = document.getElementById("warningMsg");
-const strengthText = document.getElementById("strengthText");
 const inputSlider = document.querySelector("[data-lengthSlider]");
 const lengthDisplay = document.querySelector("[data-lengthNumber]");
 
 const passwordDisplay = document.querySelector("[data-passwordDisplay]");
 const copyBtn = document.querySelector("[data-copy]");
 const copyMsg = document.querySelector("[data-copyMsg]");
+const hideTimerText = document.getElementById("hideTimer");
 const uppercaseCheck = document.querySelector("#uppercase");
 const lowercaseCheck = document.querySelector("#lowercase");
 const numbersCheck = document.querySelector("#numbers");
@@ -19,21 +19,26 @@ const symbols = '~`!@#$%^&*()_-+={[}]|:;"<,>.?/';
 
 //initially
 let password = "";
-let passwordLength = 10;
 let checkCount = 0;
-handleSlider();
-//ste strength circle color to grey
+let hideTimeout;
+let countdownInterval;
 setIndicator("#ccc");
 
+let passwordLength = 10;
+handleSlider();
+handleCheckBoxChange();
+calcStrength();
 
 //set passwordLength
 function handleSlider() {
     inputSlider.value = passwordLength;
     lengthDisplay.innerText = passwordLength;
-    //or kuch bhi karna chahiye ? - HW
-    const min = inputSlider.min;
-    const max = inputSlider.max;
-    inputSlider.style.backgroundSize = ((passwordLength - min) * 100 / (max - min)) + "% 100%"
+
+    const min = Number(inputSlider.min);
+    const max = Number(inputSlider.max);
+
+    inputSlider.style.backgroundSize =
+        ((passwordLength - min) * 100 / (max - min)) + "% 100%";
 }
 
 function setIndicator(color) {
@@ -46,7 +51,7 @@ function getRndInteger(min, max) {
 }
 
 function generateRandomNumber() {
-    return getRndInteger(0, 9);
+    return getRndInteger(0, 10);
 }
 
 function generateLowerCase() {
@@ -136,15 +141,19 @@ function handleCheckBoxChange() {
     }
 }
 
-allCheckBox.forEach((checkbox) => {
-    checkbox.addEventListener('change', handleCheckBoxChange);
-})
+allCheckBox.forEach((checkbox)=>{
+    checkbox.addEventListener("change",()=>{
+        handleCheckBoxChange();
+        calcStrength();
+    });
+});
 
+inputSlider.addEventListener("input",(e)=>{
+    passwordLength = parseInt(e.target.value);
 
-inputSlider.addEventListener('input', (e) => {
-    passwordLength = e.target.value;
-    handleSlider();
-})
+    handleSlider();     // update visible number
+    calcStrength();     // update strength
+});
 
 
 copyBtn.addEventListener('click', () => {
@@ -171,24 +180,6 @@ generateBtn.addEventListener('click', () => {
     console.log("Starting the Journey");
     //remove old password
     password = "";
-
-    //let's put the stuff mentioned by checkboxes
-
-    // if(uppercaseCheck.checked) {
-    //     password += generateUpperCase();
-    // }
-
-    // if(lowercaseCheck.checked) {
-    //     password += generateLowerCase();
-    // }
-
-    // if(numbersCheck.checked) {
-    //     password += generateRandomNumber();
-    // }
-
-    // if(symbolsCheck.checked) {
-    //     password += generateSymbol();
-    // }
 
     let funcArr = [];
 
@@ -222,6 +213,30 @@ generateBtn.addEventListener('click', () => {
     console.log("Shuffling done");
     //show in UI
     passwordDisplay.value = password;
+    
+      clearTimeout(hideTimeout);
+      clearInterval(countdownInterval);
+
+      let timeLeft = 10;
+
+      hideTimerText.innerText = `Password will auto-hide in ${timeLeft}s`;
+
+      countdownInterval = setInterval(() => {
+        timeLeft--;
+
+        if(timeLeft > 0) {
+          hideTimerText.innerText = `Password will auto-hide in ${timeLeft}s`;
+        }
+        else {
+          clearInterval(countdownInterval);
+          }
+    }, 1000);
+
+    hideTimeout = setTimeout(() => {
+      passwordDisplay.value = "********";
+      hideTimerText.innerText = "Password hidden for security";
+      clearInterval(countdownInterval);
+    }, 10000);
     console.log("UI adddition done");
     //calculate strength
     calcStrength();
