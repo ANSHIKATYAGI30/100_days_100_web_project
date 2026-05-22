@@ -224,7 +224,7 @@ const PROJECT_DATA = [
   ['Day 153', 'Material3 Showcase', './public/Material3Showcase/index.html', 'tool javascript', 'intermediate'],
   ['Day 154', 'FocusRoom', './public/FocusRoom/index.html', 'html css javascript productivity timer tasks ambient', 'intermediate'],
   ['Day 155', 'Placement Predictor', './public/PlacementPredictor/index.html', 'tool javascript html css', 'advanced'],
-  ['Day 156', 'Map Route Tracker', './public/Vector-Map-Route-Tracer/index.html', 'html css javascript', 'intermediate'],
+  ['Day 156', 'Map Route Tracker', './public/Vector-Map-Route-Tracer/index.html', 'html css javascript', 'advanced'],
 ];
 const PROJECTS = PROJECT_DATA;
 
