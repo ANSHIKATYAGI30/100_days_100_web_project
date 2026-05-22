@@ -385,6 +385,7 @@ async function fetchRepoStats() {
 
     const repo = repoRes && repoRes.ok ? await repoRes.json() : null;
     const prs = prRes && prRes.ok ? await prRes.json() : null;
+    const prCount = Number.isFinite(prs?.total_count) ? prs.total_count : null;
 
     const setNumber = (id, val) => {
       const el = document.getElementById(id);
@@ -397,13 +398,18 @@ async function fetchRepoStats() {
     if (repo) {
       setNumber('starCount', repo.stargazers_count);
       setNumber('forkCount', repo.forks_count);
-      const prCount = Number.isFinite(prs?.total_count) ? prs.total_count : null;
       const issueCount = prCount !== null ? repo.open_issues_count - prCount : repo.open_issues_count;
+      if (issueCount < 0) {
+        console.warn('GitHub stats issue count negative:', {
+          openIssues: repo.open_issues_count,
+          prCount,
+        });
+      }
       setNumber('issueCount', Math.max(issueCount, 0));
     }
 
-    if (prs && typeof prs.total_count === 'number') {
-      setNumber('prCount', prs.total_count);
+    if (prCount !== null) {
+      setNumber('prCount', prCount);
     }
 
     if (!repo && !prs) {
