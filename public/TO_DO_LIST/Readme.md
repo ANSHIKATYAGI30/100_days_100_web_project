@@ -40,21 +40,21 @@ TaskFlow is a modern, fully client-side task management web application built us
 
 ## ▶️ How to Run
 
-1. Clone the repository:
+Clone the repository:
 
 ```bash
 git clone https://github.com/dhairyagothi/100_days_100_web_project.git
 ```
 
-2. Navigate to project folder:
+ Navigate to project folder:
 
 ```bash
 cd 100_days_100_web_project
 ```
 
-3. Open the TaskFlow project folder.
+Open the TaskFlow project folder.
 
-4. Run the HTML file in your browser.
+Run the HTML file in your browser.
 
 Example:
 
@@ -88,36 +88,25 @@ TO_DO_LIST/
 
 ## 🤝 Contributing
 
-1. Fork the repository
-2. Create a new branch:
+Fork the repository
+
+Create a new branch:
 
 ```bash
 git checkout -b feature-name
 ```
 
-3. Make your changes
-4. Commit:
+Make your changes
+Commit:
 
 ```bash
 git commit -m "Add new feature"
 ```
 
-5. Push:
+Push:
 
 ```bash
 git push origin feature-name
 ```
 
-6. Open a Pull Request
-
----
-
-## 👨‍💻 Author
-
-**Gopal Wagh**
-
-GitHub: https://github.com/gopalwagh
-
----
-
-⭐ If you like this project, consider giving the repository a star.
+Open a Pull Request
