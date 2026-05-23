@@ -100,7 +100,7 @@ Enjoy using the Background Image Slider 🌄
 
 ## 📸 Screenshot
 
-<img src = "https://files.catbox.moe/q5lr0o.jpeg" width = "400" />
+<img src = "https://files.catbox.moe/q5lr0o.jpeg"/>
 
 ---
 
