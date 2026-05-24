@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Orbitron:wght@400;700;900&display=swap');
+
+@font-face {
+  font-family: "Flappy";
+  src: url("FlappyBirdRegular.ttf");
+}
+
+body {
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: #222;
+    }
+
+    canvas {
+      border: 3px solid white;
+    }

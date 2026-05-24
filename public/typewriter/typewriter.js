@@ -1,114 +1,246 @@
-const typewriter = document.querySelector(".text");
 const userInput = document.getElementById("userInput");
-const addTextButton = document.getElementById("addText");
-const deleteTextButton = document.getElementById("deleteText");
-const pauseResumeButton = document.getElementById("pauseResume");
-const speedSlider = document.getElementById("speedSlider");
-const toggleThemeButton = document.getElementById("toggleTheme");
-const changeBackgroundButton = document.getElementById("changeBackground");
+const themeToggle = document.getElementById("themeToggle");
+const pagesContainer =
+document.getElementById("pagesContainer");
+const soundToggle =
+document.getElementById("soundToggle");
+const pageCounter =
+document.getElementById("pageCounter");
+const downloadPDF =
+document.getElementById("downloadPDF");
+let audioCtx;
+let currentPage = 0;
+let paperContent = '';
+let soundEnabled = true;
 
-const defaultPhrases = ["Freelancer", "Blogger", "Developer", "Designer", "Creator"];
-let userPhrases = [];
-let phrases = [...defaultPhrases];
-let displayedPhrases = [];
-let phraseIndex = 0;
-let charIndex = 0;
-let currentPhrase = '';
-let isDeleting = false;
-let typingSpeed = 100;
-let isPaused = false;
-let typingTimeout;
+/* ---------- Pages ---------- */
 
-function type() {
-    if (!isPaused) {
-        currentPhrase = phrases[phraseIndex];
-
-        if (isDeleting) {
-            typewriter.textContent = currentPhrase.substring(0, charIndex--);
-        } else {
-            typewriter.textContent = currentPhrase.substring(0, charIndex++);
-        }
-
-        if (!isDeleting && charIndex === currentPhrase.length) {
-            setTimeout(() => {
-                isDeleting = true;
-            }, 2000);
-        } else if (isDeleting && charIndex === 0) {
-            isDeleting = false;
-            displayedPhrases.push(currentPhrase);
-            if (displayedPhrases.length === phrases.length) {
-                displayedPhrases = [];
-            }
-            phraseIndex = (phraseIndex + 1) % phrases.length;
-            while (displayedPhrases.includes(phrases[phraseIndex])) {
-                phraseIndex = (phraseIndex + 1) % phrases.length;
-            }
-        }
-
-        typingTimeout = setTimeout(type, isDeleting ? typingSpeed / 2 : typingSpeed);
-    }
+function getCurrentText(){
+    return document.querySelectorAll(".typewriterText")[currentPage];
 }
 
-addTextButton.addEventListener("click", () => {
-    const newText = userInput.value.trim();
-    if (newText) {
-        phrases.push(newText);
-        userInput.value = '';
-        isPaused = false; 
-        isDeleting = false;
-        charIndex = 0;
-        phraseIndex = phrases.length - 1;
-        clearTimeout(typingTimeout);
-        type();
-        pauseResumeButton.textContent = "Pause";
-    }
-});
+function createPage(){
+    paperContent = "";
+    currentPage++;
+    const page = document.createElement("div");
+    page.className = "paper-sheet page";
+    page.innerHTML = `<span class="typewriterText"></span><span class="cursor-paper"></span>`;
+    pagesContainer.appendChild(page);
+    pageCounter.innerText = `Page ${currentPage+1}`;
+}
 
-deleteTextButton.addEventListener("click", () => {
-    if (phrases.length > defaultPhrases.length) {
-        const lastUserPhrase = phrases.pop();
-        if (displayedPhrases.includes(lastUserPhrase)) {
-            displayedPhrases = displayedPhrases.filter(phrase => phrase !== lastUserPhrase);
+/* ---------- AUDIO ---------- */
+
+function getAudioCtx(){
+    if(!audioCtx){
+        try{
+            audioCtx = 
+                new(
+                window.AudioContext ||
+                window.webkitAudioContext
+                )();
         }
+        catch(e){}
+        }
+    return audioCtx;
+}
+
+
+function playClick(noiseVol,freq1,freq2,dur){
+    if(!soundEnabled) return;
+    const ctx = getAudioCtx();
+    if(!ctx) return;
+    const now = ctx.currentTime;
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.frequency.setValueAtTime(freq1,now);
+    osc.frequency.exponentialRampToValueAtTime(freq2,now+dur);
+    gain.gain.setValueAtTime(noiseVol,now);
+    gain.gain.exponentialRampToValueAtTime(0.001,now+dur);
+    osc.start(now);
+    osc.stop(now+dur);
+}
+
+
+function playKeyClick(){
+    playClick(0.55,900,200,0.035);
+}
+
+function playHeavyKey(){
+    playClick(0.40,140,75,0.12);
+}
+
+function playSpaceClick(){
+    playHeavyKey();
+}
+
+function playReturn(){
+    playHeavyKey();
+}
+
+function playBackspace(){
+    playHeavyKey();
+}
+
+
+/* ---------- Typing ---------- */
+
+function addCharToPaper(ch){
+    paperContent += ch;
+    getCurrentText().textContent = paperContent;
+    if(ch===" ")
+        playSpaceClick();
+
+    else
+        playKeyClick();
+
+    if(ch!=="\n")
+    flashKey(ch.toUpperCase());
+
+    /* overflow check */
+    let page = document.querySelectorAll(".paper-sheet")[currentPage];
+
+    /* check actual page overflow */
+    if(page.scrollHeight > page.clientHeight){
+        let oldText = paperContent;
+        /* create new page */
+        createPage();
+        /* continue typing on new page */
+        paperContent = "";
+        getCurrentText().textContent = paperContent;
+        }
+
+}
+
+function deleteCharFromPaper(){
+    if(paperContent.length===0)
+        return;
+    paperContent = paperContent.slice(0,-1);
+    getCurrentText().textContent = paperContent;
+    playBackspace();
+}
+
+
+/* ---------- Flash ---------- */
+
+function flashKey(char){
+    const key = document.querySelector(`.key[data-char="${char}"]`);
+    if(!key) return;
+    key.classList.add("pressed");
+    setTimeout(()=>{key.classList.remove("pressed");},130);
+}
+
+
+/* ---------- Keyboard ---------- */
+document.addEventListener("keydown",(e)=>{
+    if(e.key==="Backspace"){
+        e.preventDefault();
+        deleteCharFromPaper();
+        flashKey("BACKSPACE");
+        return;
+    }  
+    if(e.key==="Enter"){
+        e.preventDefault();
+        paperContent+="\n";
+        getCurrentText().textContent = paperContent;
+        playReturn();
+        flashKey("ENTER");
+        return;
+    }
+
+
+    if(e.key.length===1){
+        e.preventDefault();
+        addCharToPaper(e.key.toUpperCase());
     }
 });
 
-pauseResumeButton.addEventListener("click", () => {
-    isPaused = !isPaused;
-    pauseResumeButton.textContent = isPaused ? "Resume" : "Pause";
-    if (!isPaused) {
-        type();
-    } else {
-        clearTimeout(typingTimeout);
+/* ---------- Onscreen Keys ---------- */
+
+document.querySelectorAll(".key").forEach(key=>{
+    key.onclick=()=>{
+    const ch = key.dataset.char;
+    if(ch==="BACKSPACE"){
+        deleteCharFromPaper();
+        return;
     }
-});
-
-speedSlider.addEventListener("input", (e) => {
-    typingSpeed = parseInt(e.target.value);
-});
-
-toggleThemeButton.addEventListener("click", () => {
-    document.body.classList.toggle('light-theme');
-});
-
-changeBackgroundButton.addEventListener("click", () => {
-    const colors = ['#1a1a1a', '#2a2a2a', '#3a3a3a', '#4a4a4a', '#5a5a5a'];
-    const images = [
-        'url("https://via.placeholder.com/800x600")',
-        'url("https://via.placeholder.com/800x600/ff7f7f")',
-        'url("https://via.placeholder.com/800x600/7f7fff")'
-    ];
-    const randomColor = colors[Math.floor(Math.random() * colors.length)];
-    const randomImage = images[Math.floor(Math.random() * images.length)];
-    const isImage = Math.random() > 0.5;
-
-    if (isImage) {
-        document.body.style.backgroundImage = randomImage;
-        document.body.style.backgroundColor = '';
-    } else {
-        document.body.style.backgroundColor = randomColor;
-        document.body.style.backgroundImage = '';
+    if(ch==="ENTER"){
+        paperContent+="\n";
+        getCurrentText().textContent=paperContent;
+        playReturn();
+    return;
     }
+    addCharToPaper(ch);
+    };
 });
 
-type();
+
+/* ---------- Sound Toggle ---------- */
+
+soundToggle.onclick=()=>{
+    soundEnabled = !soundEnabled;
+    soundToggle.innerText=soundEnabled ?"🔊 Sound ON":"🔇 Sound OFF";
+};
+
+
+/* ---------- PDF ---------- */
+
+downloadPDF.onclick = () => {
+    const pages = document.querySelectorAll(".paper-sheet");
+    const container = document.createElement("div");
+    pages.forEach(page => {
+        const clone = page.cloneNode(true);
+        /* force dark text for pdf */
+        clone.querySelectorAll("*").forEach(el=>{
+            el.style.color="#000";
+            el.style.opacity="1";
+            el.style.filter="none";
+            el.style.textShadow="none";
+        }
+    );
+    clone.style.color="#000";
+    clone.style.background="#fff";
+    /* remove blinking cursor in pdf */
+    const cursor = clone.querySelector(".cursor-paper");
+    if(cursor) cursor.remove();
+    clone.style.width="794px";     // A4 width
+    clone.style.minHeight="1123px";
+    clone.style.padding="40px";
+    clone.style.pageBreakAfter="always";
+    clone.style.boxSizing="border-box";
+    container.appendChild(clone);
+    });
+    html2pdf().set({
+        filename:"typewriter-pages.pdf",
+        margin:0,
+        image:{
+            type:"jpeg",
+            quality:1
+        },
+        html2canvas:{
+            scale:2
+        },
+        jsPDF:{
+            unit:"px",
+            format:[794,1123],
+            orientation:"portrait"
+        }
+    }).from(container).save();
+};
+
+
+/* ---------- Theme ---------- */
+
+themeToggle.onclick=()=>{
+    document.body.classList.toggle("light-theme");
+    const isLight = document.body.classList.contains("light-theme");
+    themeToggle.textContent= isLight?"☀️":"🌙";localStorage.setItem("theme",isLight?"light":"dark");
+};
+
+const savedTheme = localStorage.getItem("theme");
+if(savedTheme==="light"){
+    document.body.classList.add("light-theme");
+    themeToggle.textContent="☀️";
+}
