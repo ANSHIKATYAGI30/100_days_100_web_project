@@ -166,8 +166,9 @@ body::after {
 }
 
 body > *:not(.ambient):not(.noise-layer) {
-    position: relative;
-  
+  position: relative;
+}
+
 body>*:not(.ambient):not(.noise-layer):not(canvas):not(header) {
   position: relative;
   z-index: 1;
@@ -1983,6 +1984,17 @@ body.light-mode .footer.homepage-footer .social-btn {
 
   .hero-terminal {
     opacity: 0.45;
+  }
+
+  body::before,
+  body::after,
+  .ambient::before,
+  .noise-layer {
+    animation: none !important;
+  }
+
+  #particleCanvas {
+    display: none;
   }
 
   .stats-strip {
