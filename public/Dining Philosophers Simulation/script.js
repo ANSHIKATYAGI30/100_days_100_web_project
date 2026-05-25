@@ -58,8 +58,8 @@ var right = id;
 }
 
 function releaseForks(id) {
-    var left  = id;
-    var right = (id + 1) % 5;
+    var left  = (id + 4) % 5;
+    var right = id;
     forks[left]  = true;
     forks[right] = true;
     document.getElementById('f' + left).className  = 'fork';
