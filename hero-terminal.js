@@ -299,11 +299,15 @@ function FaultyTerminal({
       rendererRef.current = renderer;
       gl = renderer.gl;
       if (!gl) throw new Error('No GL context');
-      // Clamp canvas size to avoid mobile GPU memory issues
-      if (gl.canvas.width > MAX_CANVAS_SIZE || gl.canvas.height > MAX_CANVAS_SIZE) {
-        gl.canvas.width = Math.min(gl.canvas.width, MAX_CANVAS_SIZE);
-        gl.canvas.height = Math.min(gl.canvas.height, MAX_CANVAS_SIZE);
-      }
+      // Clamp renderer size via setSize() with clamped CSS dimensions to keep canvas, viewport, and renderer state in sync
+      // This avoids direct gl.canvas width/height manipulation which can cause viewport/uniform desync
+      const cssWidth = Math.max(1, container.clientWidth || container.offsetWidth || 1);
+      const cssHeight = Math.max(1, container.clientHeight || container.offsetHeight || 1);
+      const maxCssWidth = Math.max(1, Math.floor(MAX_CANVAS_SIZE / useDpr));
+      const maxCssHeight = Math.max(1, Math.floor(MAX_CANVAS_SIZE / useDpr));
+      const clampedCssWidth = Math.min(cssWidth, maxCssWidth);
+      const clampedCssHeight = Math.min(cssHeight, maxCssHeight);
+      renderer.setSize(clampedCssWidth, clampedCssHeight);
       gl.clearColor(0, 0, 0, 1);
       // iOS/Safari: force context loss handler for quirks
       gl.getExtension('WEBGL_lose_context');
@@ -456,12 +460,15 @@ function FaultyTerminal({
       clearTimeout(resizeTimeout);
       resizeTimeout = setTimeout(() => {
         if (renderer && renderer.setSize) {
-          renderer.setSize(container.offsetWidth, container.offsetHeight);
-          // Clamp canvas size again after resize
-          if (gl.canvas.width > MAX_CANVAS_SIZE || gl.canvas.height > MAX_CANVAS_SIZE) {
-            gl.canvas.width = Math.min(gl.canvas.width, MAX_CANVAS_SIZE);
-            gl.canvas.height = Math.min(gl.canvas.height, MAX_CANVAS_SIZE);
-          }
+          // Clamp CSS dimensions passed to setSize() to respect mobile GPU memory limits
+          // This keeps canvas size, viewport, and renderer state in sync
+          const cssWidth = Math.max(1, container.clientWidth || container.offsetWidth || 1);
+          const cssHeight = Math.max(1, container.clientHeight || container.offsetHeight || 1);
+          const maxCssWidth = Math.max(1, Math.floor(MAX_CANVAS_SIZE / useDpr));
+          const maxCssHeight = Math.max(1, Math.floor(MAX_CANVAS_SIZE / useDpr));
+          const clampedCssWidth = Math.min(cssWidth, maxCssWidth);
+          const clampedCssHeight = Math.min(cssHeight, maxCssHeight);
+          renderer.setSize(clampedCssWidth, clampedCssHeight);
           program.uniforms.iResolution.value = new Color(
             gl.canvas.width,
             gl.canvas.height,
