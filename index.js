@@ -158,6 +158,14 @@ function resolveProjectUrls(day, name, url, tags) {
     demoUrl = sourceOnly ? trimmed : (githubTreeToLocalDemo(trimmed) || trimmed);
   }
 
+  if (!sourceOnly && demoUrl && !demoUrl.startsWith('http')) {
+    try {
+      demoUrl = new URL(demoUrl, window.location.href).href;
+    } catch (error) {
+      // Keep the original path if URL normalization fails.
+    }
+  }
+
   return { demoUrl, sourceUrl, sourceOnly };
 }
 
