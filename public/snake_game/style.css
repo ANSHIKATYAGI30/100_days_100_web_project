@@ -31,8 +31,11 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;  /* Changed from 'hidden' to allow scrolling if needed */
   user-select: none;
+  padding-bottom: 100px;  /* ADD THIS - creates space for mobile controls */
+  box-sizing: border-box;
 }
 
 
@@ -298,7 +301,6 @@ canvas {
   to { top: 200%; }
 }
 
-/* ========== ADD MOBILE CONTROLS CSS AT THE VERY BOTTOM ========== */
 /* ========== MOBILE TOUCH CONTROLS (T-Shape) ========== */
 .mobile-controls {
   position: fixed;
@@ -308,24 +310,24 @@ canvas {
   display: none;
   justify-content: center;
   align-items: center;
-  padding: 15px;
+  padding: 10px;
   z-index: 100;
-  background: rgba(0, 0, 0, 0.6);
-  border-radius: 80px;
-  backdrop-filter: blur(10px);
+  /* REMOVED: background: rgba(0, 0, 0, 0.5); */
+  /* REMOVED: border-radius: 60px; */
+  /* REMOVED: backdrop-filter: blur(8px); */
 }
 
 .dpad {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
 }
 
 .dpad-row {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 12px;
 }
 
 .top-row {
@@ -333,13 +335,13 @@ canvas {
 }
 
 .bottom-row {
-  gap: 20px;
+  gap: 12px;
 }
 
 .dpad-btn {
-  width: 70px;
-  height: 70px;
-  font-size: 32px;
+  width: 50px;
+  height: 50px;
+  font-size: 24px;
   font-weight: bold;
   background: rgba(0, 0, 0, 0.85);
   border: 2px solid #00ff41;
@@ -347,7 +349,7 @@ canvas {
   color: #00ff41;
   cursor: pointer;
   transition: transform 0.08s ease, box-shadow 0.08s ease;
-  box-shadow: 0 0 10px rgba(0, 255, 65, 0.3);
+  box-shadow: 0 0 8px rgba(0, 255, 65, 0.3);
   font-family: monospace;
   -webkit-tap-highlight-color: transparent;
   touch-action: manipulation;
@@ -357,63 +359,92 @@ canvas {
   transform: scale(0.92);
   background: #00ff41;
   color: #000;
-  box-shadow: 0 0 20px #00ff41;
+  box-shadow: 0 0 15px #00ff41;
 }
 
-/* Show only on mobile/tablet */
+/* ========== RESPONSIVE DESIGN ========== */
+
+/* Tablets and small desktops */
 @media (max-width: 768px) {
   .mobile-controls {
     display: flex;
+    bottom: 15px;
+    padding: 8px;
   }
   
   .dpad-btn {
-    width: 60px;
-    height: 60px;
-    font-size: 28px;
+    width: 45px;
+    height: 45px;
+    font-size: 22px;
   }
   
   .dpad-row {
-    gap: 15px;
+    gap: 10px;
   }
   
   .bottom-row {
-    gap: 15px;
+    gap: 10px;
+  }
+  
+  body {
+    padding-bottom: 90px;
+    overflow-y: auto;
+  }
+  
+  .canvas-wrapper {
+    margin-bottom: 80px;
+  }
+}
+
+/* Mobile phones (500px and below) */
+@media screen and (max-width: 500px) {
+  .mobile-controls {
+    bottom: 10px;
+    padding: 6px;
+  }
+  
+  .dpad-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+    border-width: 1.5px;
+  }
+  
+  .dpad-row {
+    gap: 8px;
+  }
+  
+  .bottom-row {
+    gap: 8px;
+  }
+  
+  .dpad {
+    gap: 6px;
+  }
+  
+  body {
+    padding-bottom: 80px;
+  }
+  
+  .canvas-wrapper {
+    margin-bottom: 70px;
   }
 }
 
 /* Extra small phones */
-@media (max-width: 480px) {
-  .mobile-controls {
-    padding: 10px;
-  }
-  
+@media screen and (max-width: 480px) {
   .dpad-btn {
-    width: 55px;
-    height: 55px;
-    font-size: 24px;
+    width: 38px;
+    height: 38px;
+    font-size: 16px;
   }
   
-  .dpad-row {
-    gap: 12px;
-  }
-  
-  .bottom-row {
-    gap: 12px;
+  body {
+    padding-bottom: 75px;
   }
 }
 
 /* Prevent canvas context menu and scrolling on long press */
 canvas {
   touch-action: none;
-}
-
-/* Add bottom padding to body on mobile */
-@media (max-width: 768px) {
-  body {
-    padding-bottom: 100px;
-  }
-  
-  .canvas-wrapper {
-    margin-bottom: 10px;
-  }
 }
