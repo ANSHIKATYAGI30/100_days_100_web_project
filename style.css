@@ -173,7 +173,7 @@ body > *:not(.ambient):not(.noise-layer):not(.cursor-ring):not(header):not(.hero
 
 body > header {
   position: relative;
-  z-index: 100002;
+  z-index: 100001;
 }
 
 .cursor-ring {
