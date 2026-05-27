@@ -30,15 +30,20 @@ function loadContent(){
     input.addEventListener('change',changeQty);
   });
 
-  //Product Cart
-  
-  let cartBtns=document.querySelectorAll('.add-cart');
-  cartBtns.forEach((btn)=>{
-    btn.addEventListener('click',addCart);
-  });
+  // Product Cart
+let cartBtns = document.querySelectorAll('.add-cart');
 
-  updateTotal();
-}
+cartBtns.forEach((btn) => {
+  btn.addEventListener('click', addCart);
+});
+
+// Wishlist Buttons
+let wishlistBtns = document.querySelectorAll('.wishlist-btn');
+
+wishlistBtns.forEach((btn) => {
+  btn.addEventListener('click', toggleWishlist);
+});
+
 
 
 //Remove Item
@@ -60,8 +65,34 @@ function changeQty(){
 }
 
 let itemList=[];
+let wishlist = [];
 
 //Add Cart
+function toggleWishlist() {
+  const card = this.closest('.shoe-box');
+  const title = card.querySelector('.shoe-title').textContent;
+
+  if (wishlist.includes(title)) {
+    wishlist = wishlist.filter(item => item !== title);
+    this.classList.remove('active');
+  } else {
+    wishlist.push(title);
+    this.classList.add('active');
+  }
+
+  updateWishlistCount();
+}
+function updateWishlistCount() {
+  const count = document.querySelector('#wishlist-count');
+
+  count.textContent = wishlist.length;
+
+  if (wishlist.length === 0) {
+    count.style.display = 'none';
+  } else {
+    count.style.display = 'block';
+  }
+}
 function addCart(){
   let shoe=this.parentElement;
   let title=shoe.querySelector('.shoe-title').innerHTML;
