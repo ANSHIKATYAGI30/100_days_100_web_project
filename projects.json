@@ -979,7 +979,7 @@
 "projectDesc":"Playable piano simulation responding to keyboard or click inputs.",
 "techStack":["css","javascript"],
 "difficulty":"intermediate",
-"projectPath":"./public/Virtual Piano/index.html"
+"projectPath":"./public/Virtual_Piano/index.html"
 },
 
 {
