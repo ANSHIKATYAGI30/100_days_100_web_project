@@ -242,7 +242,7 @@ submitOrder.addEventListener('click', () => {
   const payment = document.querySelector('#payment-method').value;
 
   if(fullName === '' || address === '' || phone === '' || payment === ''){
-    alert('Please fill all fields');
+    showToast('Please fill all fields');
     return;
   }
 
@@ -290,7 +290,6 @@ searchInput.addEventListener('keyup', () => {
   }
 
 });
-const submitOrder = document.querySelector('#submit-order');
 const clearCartBtn = document.querySelector('.clear-cart-btn');
 clearCartBtn.addEventListener('click', () => {
 
@@ -303,5 +302,7 @@ clearCartBtn.addEventListener('click', () => {
   localStorage.removeItem("cartItems");
 
   updateTotal();
+
+  showToast("Cart cleared");
 
 });
