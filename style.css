@@ -1941,3 +1941,12 @@ body.light-mode .brand-mark {
   background-color: #007bff;
   transform: scale(1.1);
 }
+/* ==========================================================================
+   Accessibility Fix: Low Color Contrast Ratio (#4358)
+   ========================================================================== */
+footer, 
+.footer, 
+footer p, 
+footer a {
+    color: #575757 !important;
+}
