@@ -1476,37 +1476,7 @@ function updateNavbar() {
 /* ============================================================
    THEME TOGGLE
    ============================================================ */
-function initTheme() {
-  const root = document.documentElement;
-  const saved = localStorage.getItem('theme') || 'dark';
-  let transitionTimer = null;
-
-  const applyTheme = (theme) => {
-    root.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-
-    const iconClass = theme === 'light' ? 'fa-solid fa-sun' : 'fa-solid fa-moon';
-    document.querySelectorAll('#themeToggle i, #themeToggleNav i').forEach(icon => {
-      icon.className = iconClass;
-    });
-  };
-
-  applyTheme(saved === 'light' ? 'light' : 'dark');
-
-  document.addEventListener('click', (e) => {
-    const target = e.target.closest('#themeToggle') || e.target.closest('#themeToggleNav');
-    if (!target) return;
-
-    const nextTheme = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
-    applyTheme(nextTheme);
-
-    root.dataset.themeTransitioning = 'true';
-    if (transitionTimer) clearTimeout(transitionTimer);
-    transitionTimer = setTimeout(() => {
-      delete root.dataset.themeTransitioning;
-    }, 400);
-  });
-}
+// Implemented by the shared ThemeManager in theme.js.
 
 /* ============================================================
    SCROLL TO TOP
@@ -1675,41 +1645,7 @@ window.clearAllTechFilters = clearAllTechFilters;
    THEME CORE ENGINE (Fixes Issue #4359)
    ============================================================ */
 function initTheme() {
-  const root = document.documentElement;
-  const savedTheme = localStorage.getItem('theme') || 'dark';
-  let transitionTimer = null;
-
-  const applyTheme = (theme) => {
-    root.setAttribute('data-theme', theme);
-    localStorage.setItem('theme', theme);
-
-    // Syncs both desktop and navbar toggle icons at the same time
-    const iconClass = theme === 'light' ? 'fas fa-sun' : 'fas fa-moon';
-    document.querySelectorAll('#themeToggle i, #themeToggleNav i').forEach((icon) => {
-      icon.className = iconClass;
-    });
-  };
-
-  const toggleTheme = () => {
-    const currentTheme = root.getAttribute('data-theme') || 'dark';
-    const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
-    applyTheme(nextTheme);
-
-    // Triggers the repaint guard to keep background transitions smooth
-    root.setAttribute('data-theme-transitioning', 'true');
-    if (transitionTimer) clearTimeout(transitionTimer);
-    transitionTimer = setTimeout(() => {
-      root.removeAttribute('data-theme-transitioning');
-    }, 400);
-  };
-
-  // Attach click events to both possible button IDs
-  document.querySelectorAll('#themeToggle, #themeToggleNav').forEach((button) => {
-    button.addEventListener('click', toggleTheme);
-  });
-
-  // Run initial theme application on load
-  applyTheme(savedTheme === 'light' ? 'light' : 'dark');
+  window.ThemeManager?.init?.();
 }
 
 // Initialize the theme engine
