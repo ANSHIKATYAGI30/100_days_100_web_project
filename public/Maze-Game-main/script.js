@@ -502,6 +502,7 @@ function rand(max) {
   // sprite.src = 'media/sprite.png';
   
   window.onload = function() {
+    document.getElementById("mazeContainer").classList.add("preview");
     let viewWidth = $("#view").width();
     let viewHeight = $("#view").height();
     if (viewHeight < viewWidth) {
@@ -519,9 +520,9 @@ function rand(max) {
       if(completeOne === true && completeTwo === true)
          {
            console.log("Runs");
-           setTimeout(function(){
-             makeMaze();
-           }, 500);         
+          // setTimeout(function(){
+          //   makeMaze();
+           //}, 500);         
          }
     };
     sprite = new Image();
@@ -569,6 +570,10 @@ function rand(max) {
   };
   
   function makeMaze() {
+     const mazeContainer = document.getElementById("mazeContainer");
+
+    mazeContainer.classList.remove("preview");
+    mazeContainer.classList.add("active");
     if (player != undefined) {
       player.unbindKeyDown();
       player = null;
@@ -583,3 +588,12 @@ function rand(max) {
       document.getElementById("mazeContainer").style.opacity = "100";
     }
   }
+
+  function startGame() {
+  const mazeContainer = document.getElementById("mazeContainer");
+
+  mazeContainer.classList.remove("preview");
+  mazeContainer.classList.add("active");
+
+  makeMaze();
+}
