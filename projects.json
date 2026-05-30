@@ -2436,5 +2436,20 @@
     ],
     "difficulty": "advanced",
     "projectPath": "./public/Complaint_Management_System/index.html"
-  }
+  },
+{
+  "projectNo": 196,
+  "projectName": "Pac-Man",
+  "projectType": "Game",
+  "projectDesc": "A classic Pac-Man game built with HTML5 Canvas and JavaScript. Features all 4 ghosts, touch and keyboard controls, score tracking, sound toggle, and is fully responsive for all devices.",
+  "techStack": [
+    "game",
+    "html",
+    "css",
+    "javascript",
+    "jquery"
+  ],
+  "difficulty": "advanced",
+  "projectPath": "./public/pacman/index.html"
+}
 ]
