@@ -1,6 +1,9 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [],
+  content: [
+    './index.html',
+    './src/**/*.{js,jsx,ts,tsx}',
+  ],
   darkMode: 'class',
   theme: {
     extend: {
@@ -16,7 +19,4 @@ export default {
     },
   },
   plugins: [],
-  content: [
-    './src/**/*.{js,jsx,ts,tsx}',
-  ],
 }
