@@ -2400,15 +2400,15 @@
   },
   {
     "projectNo": 193,
-    "projectName": "Escape Room",
-    "projectType": "Game",
-    "projectDesc": "A thrilling escape room experience in your browser.",
+    "projectName": "Theme-Toggler",
+    "projectType": "UI / Animation",
+    "projectDesc": "A responsive theme toggler that switches between light and dark modes and saves the user's preference using localStorage.",
     "techStack": [
-      "html",
-      "css",
+      "react",
+      "tailwindcss",
       "javascript"
     ],
-    "difficulty": "intermediate",
-    "projectPath": "./public/Escape_Room/index.html"
+    "difficulty": "advanced",
+    "projectPath": "./public/Theme-toggler/src/App.jsx"
   }
 ]
