@@ -192,7 +192,58 @@ function getProjectDescription(project) {
   );
 }
 
-function buildProjectCardHTML({
+function getSafeProjectHref(url) {
+  const rawUrl = String(url || '').trim();
+  if (!rawUrl) return null;
+
+  try {
+    const parsed = new URL(rawUrl, window.location.href);
+    if (parsed.protocol === 'http:' || parsed.protocol === 'https:') {
+      return rawUrl;
+    }
+  } catch (error) {
+  }
+
+  return null;
+}
+
+function createIcon(className) {
+  const icon = document.createElement('i');
+  icon.className = className;
+  icon.setAttribute('aria-hidden', 'true');
+  return icon;
+}
+
+function createProjectLink({ href, className, day, label, iconClassName, iconPosition = 'before' }) {
+  const link = document.createElement('a');
+  link.className = className;
+  link.target = '_blank';
+  link.rel = 'noopener noreferrer';
+  link.dataset.id = String(day || '');
+
+  const safeHref = getSafeProjectHref(href);
+  if (safeHref) {
+    link.setAttribute('href', safeHref);
+  } else {
+    link.setAttribute('href', '#');
+    link.setAttribute('aria-disabled', 'true');
+    link.addEventListener('click', (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    });
+  }
+
+  const icon = createIcon(iconClassName);
+  if (iconPosition === 'before') {
+    link.append(icon, document.createTextNode(` ${label}`));
+  } else {
+    link.append(document.createTextNode(`${label} `), icon);
+  }
+
+  return link;
+}
+
+function buildProjectCard({
   day,
   name,
   url,
@@ -207,65 +258,109 @@ function buildProjectCardHTML({
     : String(tags || '')
         .split(/\s+/)
         .filter((t) => t && t !== SOURCE_ONLY_TAG);
-  const tagsHTML = tagsArray.map((t) => `<span class="tag">${t}</span>`).join('');
-  const project =
-PROJECTS.find(p => p[1] === name);
+  const project = PROJECTS.find(p => p[1] === name);
+  const description = getProjectDescription(project);
 
-const description =
-getProjectDescription(project);
-  const sourceOnlyBadge = sourceOnly
-    ? '<span class="source-only-badge" title="Requires local server setup">Source only</span>'
-    : '';
+  const card = document.createElement('div');
+  card.className = sourceOnly ? 'project-card source-only visible' : 'project-card visible';
+
+  const meta = document.createElement('div');
+  meta.className = 'card-meta';
+
+  const dayElement = document.createElement('span');
+  dayElement.className = 'card-day';
+  dayElement.textContent = day || '';
+
+  const categoryWrap = document.createElement('span');
+  categoryWrap.className = 'card-category-wrap';
+
+  const categoryElement = document.createElement('span');
+  categoryElement.className = 'card-category';
+  categoryElement.textContent = category || '';
+  categoryWrap.appendChild(categoryElement);
+
+  if (sourceOnly) {
+    const sourceOnlyBadge = document.createElement('span');
+    sourceOnlyBadge.className = 'source-only-badge';
+    sourceOnlyBadge.title = 'Requires local server setup';
+    sourceOnlyBadge.textContent = 'Source only';
+    categoryWrap.appendChild(sourceOnlyBadge);
+  }
+
+  meta.append(dayElement, categoryWrap);
+
+  const nameElement = document.createElement('div');
+  nameElement.className = 'card-name';
+  nameElement.textContent = name || '';
+
+  const tagsContainer = document.createElement('div');
+  tagsContainer.className = 'card-tags';
+  tagsArray.forEach((tag) => {
+    const tagElement = document.createElement('span');
+    tagElement.className = 'tag';
+    tagElement.textContent = tag;
+    tagsContainer.appendChild(tagElement);
+  });
+
+  const footer = document.createElement('div');
+  footer.className = 'card-footer';
+
+  const actions = document.createElement('div');
+  actions.className = 'card-actions-left';
+
   const primaryLink = sourceOnly
-    ? `<a href="${sourceUrl}" target="_blank" class="card-link open-project" data-id="${day}" rel="noopener noreferrer" onclick="event.stopPropagation()">
-                        <i class="fab fa-github"></i> Source
-                    </a>`
-    : `<a href="${demoUrl}" target="_blank" class="card-link open-project" data-id="${day}" rel="noopener noreferrer" onclick="event.stopPropagation()">
-                        Demo <i class="fas fa-arrow-right"></i>
-                    </a>`;
-  const codeLink = sourceOnly
-    ? ''
-    : `<a href="${sourceUrl}" target="_blank" class="card-link view-code-link" rel="noopener noreferrer" onclick="event.stopPropagation()">
-                        <i class="fab fa-github"></i> Code
-                    </a>`;
+    ? createProjectLink({
+        href: sourceUrl,
+        className: 'card-link open-project',
+        day,
+        label: 'Source',
+        iconClassName: 'fab fa-github',
+      })
+    : createProjectLink({
+        href: demoUrl,
+        className: 'card-link open-project',
+        day,
+        label: 'Demo',
+        iconClassName: 'fas fa-arrow-right',
+        iconPosition: 'after',
+      });
+  actions.appendChild(primaryLink);
 
-  return {
-    html: `
-            <div class="card-meta">
-                <span class="card-day">${day}</span>
-                <span class="card-category-wrap">
-                  <span class="card-category">${category}</span>
-                  ${sourceOnlyBadge}
-                </span>
-            </div>
-            <div class="card-name">${name}</div>
-            ${
-              showDescription
-                ? `<div class="card-description">
-    ${description}
-</div>`
-                : ''
-            }
-            <div class="card-tags">${tagsHTML}</div>
-            <div class="card-footer">
-                <div class="card-actions-left">
-                    ${primaryLink}
-                    ${codeLink}
-                </div>
-                <button class="bookmark-btn ${isBookmarked ? 'active' : ''}" data-id="${day}" onclick="event.stopPropagation()">
-                    <i class="${isBookmarked ? 'fa-solid' : 'fa-regular'} fa-bookmark"></i>
-                </button>
-            </div>
-        `,
-    demoUrl,
-    sourceOnly,
-  };
+  if (!sourceOnly) {
+    actions.appendChild(createProjectLink({
+      href: sourceUrl,
+      className: 'card-link view-code-link',
+      day,
+      label: 'Code',
+      iconClassName: 'fab fa-github',
+    }));
+  }
+
+  const bookmarkButton = document.createElement('button');
+  bookmarkButton.className = `bookmark-btn ${isBookmarked ? 'active' : ''}`.trim();
+  bookmarkButton.dataset.id = String(day || '');
+  bookmarkButton.type = 'button';
+  bookmarkButton.appendChild(createIcon(`${isBookmarked ? 'fa-solid' : 'fa-regular'} fa-bookmark`));
+
+  footer.append(actions, bookmarkButton);
+
+  card.append(meta, nameElement);
+  if (showDescription) {
+    const descriptionElement = document.createElement('div');
+    descriptionElement.className = 'card-description';
+    descriptionElement.textContent = description;
+    card.appendChild(descriptionElement);
+  }
+  card.append(tagsContainer, footer);
+
+  return { card, demoUrl: getSafeProjectHref(demoUrl), sourceOnly };
 }
 
 function attachProjectCardInteraction(card, demoUrl, projectData = null) {
   card.style.cursor = 'pointer';
   card.onclick = (e) => {
     if (e.target.closest('a, button')) return;
+    if (!demoUrl) return;
     
     // Track the project visit if projectData is provided
     if (projectData) {
@@ -367,16 +462,22 @@ function updateTechFilterDisplay() {
   }
 
   container.style.display = 'flex';
+  tagsContainer.textContent = '';
 
-  // Render filter tags with remove buttons
-  tagsContainer.innerHTML = techStackFilters.map(tech => `
-    <span class="tech-filter-tag">
-      ${tech}
-      <button onclick="removeTechFilter('${tech}')" aria-label="Remove ${tech} filter">
-        <i class="fas fa-times"></i>
-      </button>
-    </span>
-  `).join('');
+  techStackFilters.forEach((tech) => {
+    const tag = document.createElement('span');
+    tag.className = 'tech-filter-tag';
+    tag.appendChild(document.createTextNode(tech));
+
+    const removeButton = document.createElement('button');
+    removeButton.type = 'button';
+    removeButton.setAttribute('aria-label', `Remove ${tech} filter`);
+    removeButton.appendChild(createIcon('fas fa-times'));
+    removeButton.addEventListener('click', () => removeTechFilter(tech));
+
+    tag.appendChild(removeButton);
+    tagsContainer.appendChild(tag);
+  });
 }
 
 /**
@@ -694,9 +795,8 @@ function renderGrid() {
 
   pageItems.forEach(([day, name, url, tags]) => {
     const category = getCategoryFromTags(tags, name);
-    const card = document.createElement('div');
     const isBookmarked = bookmarkedProjects.some((item) => item[0] === day);
-    const { html, demoUrl, sourceOnly } = buildProjectCardHTML({
+    const { card, demoUrl } = buildProjectCard({
       day,
       name,
       url,
@@ -706,8 +806,6 @@ function renderGrid() {
       showDescription: true,
     });
 
-    card.className = sourceOnly ? 'project-card source-only' : 'project-card';
-    card.innerHTML = html;
     attachProjectCardInteraction(card, demoUrl, [day, name, url, tags]);
 
     fragment.appendChild(card);
@@ -1031,8 +1129,7 @@ function renderBookmarks() {
 
   visibleBookmarks.forEach(([day, name, url, tags]) => {
     const category = getCategoryFromTags(tags, name);
-    const card = document.createElement('div');
-    const { html, demoUrl, sourceOnly } = buildProjectCardHTML({
+    const { card, demoUrl } = buildProjectCard({
       day,
       name,
       url,
@@ -1042,8 +1139,6 @@ function renderBookmarks() {
       showDescription: true,
     });
 
-    card.className = sourceOnly ? 'project-card source-only' : 'project-card';
-    card.innerHTML = html;
     attachProjectCardInteraction(card, demoUrl, [day, name, url, tags]);
 
     bookmarkGrid.appendChild(card);
@@ -1080,9 +1175,8 @@ function renderRecentProjects() {
     const tags = projectObj.tags || projectObj[3];
     
     const category = getCategoryFromTags(tags, name);
-    const card = document.createElement('div');
     const isBookmarked = bookmarkedProjects.some((item) => item[0] === day);
-    const { html, demoUrl, sourceOnly } = buildProjectCardHTML({
+    const { card, demoUrl } = buildProjectCard({
       day,
       name,
       url,
@@ -1092,8 +1186,6 @@ function renderRecentProjects() {
       showDescription: true,
     });
 
-    card.className = sourceOnly ? 'project-card source-only' : 'project-card';
-    card.innerHTML = html;
     attachProjectCardInteraction(card, demoUrl, [day, name, url, tags]);
 
     recentGrid.appendChild(card);
