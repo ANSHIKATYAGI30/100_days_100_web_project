@@ -378,18 +378,53 @@ body.light .primary-action {
 /* =====================
    THEME COLORS (12 total)
    ===================== */
-.note-card[data-color="teal"]   { --accent: #2dd4bf; }
-.note-card[data-color="violet"] { --accent: #8b5cf6; }
-.note-card[data-color="amber"]  { --accent: #f59e0b; }
-.note-card[data-color="rose"]   { --accent: #fb7185; }
-.note-card[data-color="blue"]   { --accent: #3b82f6; }
-.note-card[data-color="green"]  { --accent: #22c55e; }
-.note-card[data-color="purple"] { --accent: #a855f7; }
-.note-card[data-color="orange"] { --accent: #f97316; }
-.note-card[data-color="pink"]   { --accent: #ec4899; }
-.note-card[data-color="yellow"] { --accent: #eab308; }
-.note-card[data-color="indigo"] { --accent: #6366f1; }
-.note-card[data-color="red"]    { --accent: #ef4444; }
+.note-card[data-color="teal"] {
+  --accent: #2dd4bf;
+}
+
+.note-card[data-color="violet"] {
+  --accent: #8b5cf6;
+}
+
+.note-card[data-color="amber"] {
+  --accent: #f59e0b;
+}
+
+.note-card[data-color="rose"] {
+  --accent: #fb7185;
+}
+
+.note-card[data-color="blue"] {
+  --accent: #3b82f6;
+}
+
+.note-card[data-color="green"] {
+  --accent: #22c55e;
+}
+
+.note-card[data-color="purple"] {
+  --accent: #a855f7;
+}
+
+.note-card[data-color="orange"] {
+  --accent: #f97316;
+}
+
+.note-card[data-color="pink"] {
+  --accent: #ec4899;
+}
+
+.note-card[data-color="yellow"] {
+  --accent: #eab308;
+}
+
+.note-card[data-color="indigo"] {
+  --accent: #6366f1;
+}
+
+.note-card[data-color="red"] {
+  --accent: #ef4444;
+}
 
 /* =====================
    NOTE CARD BODY
@@ -403,9 +438,10 @@ body.light .primary-action {
 
 .card-meta,
 .card-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  width: 100%;
 }
 
 .card-meta {
@@ -435,10 +471,9 @@ body.light .primary-action {
 
 .note-card footer {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-wrap: wrap;
   gap: 0.75rem;
-  margin-top: 1rem;
+  align-items: center;
 }
 
 .badge {
@@ -455,11 +490,8 @@ body.light .primary-action {
 }
 
 .card-button {
-  min-width: 2.25rem;
-  min-height: 2.25rem;
-  padding: 0 0.6rem;
-  color: var(--muted);
-  font-size: 0.82rem;
+  width: 100%;
+  justify-content: center;
 }
 
 .card-button.active {
@@ -621,7 +653,7 @@ body.light .primary-action {
   border-color: var(--primary);
 }
 
-.form-row > div {
+.form-row>div {
   flex: 1;
 }
 
@@ -776,6 +808,7 @@ body.light .primary-action {
 }
 
 @media (max-width: 640px) {
+
   .quick-stats,
   .form-row {
     grid-template-columns: 1fr;
