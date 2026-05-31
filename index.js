@@ -729,7 +729,7 @@ function renderGrid() {
       showDescription: true,
     });
 
-    card.className = sourceOnly ? 'project-card source-only' : 'project-card';
+    card.className = sourceOnly ? 'project-card source-only visible' : 'project-card visible';
     card.innerHTML = html;
     attachProjectCardInteraction(card, demoUrl, [day, name, url, tags]);
 
@@ -1065,7 +1065,7 @@ function renderBookmarks() {
       showDescription: true,
     });
 
-    card.className = sourceOnly ? 'project-card source-only' : 'project-card';
+    card.className = sourceOnly ? 'project-card source-only visible' : 'project-card visible';
     card.innerHTML = html;
     attachProjectCardInteraction(card, demoUrl, [day, name, url, tags]);
 
@@ -1115,7 +1115,7 @@ function renderRecentProjects() {
       showDescription: true,
     });
 
-    card.className = sourceOnly ? 'project-card source-only' : 'project-card';
+    card.className = sourceOnly ? 'project-card source-only visible' : 'project-card visible';
     card.innerHTML = html;
     attachProjectCardInteraction(card, demoUrl, [day, name, url, tags]);
 
