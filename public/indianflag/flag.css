@@ -28,6 +28,7 @@ html {
   z-index: 9999;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
 }
+
 /* ================= BACKGROUND VIDEO ================= */
 
 .background-video {
@@ -158,11 +159,9 @@ html {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    to right,
-    rgba(255, 255, 255, 0.15),
-    rgba(0, 0, 0, 0.08)
-  );
+  background: linear-gradient(to right,
+      rgba(255, 255, 255, 0.15),
+      rgba(0, 0, 0, 0.08));
 }
 
 .top {
@@ -193,6 +192,7 @@ html {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
@@ -358,7 +358,9 @@ html {
 
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 
-  transition: transform 0.3s ease, background 0.3s ease;
+  transition:
+    transform 0.3s ease,
+    background 0.3s ease;
 }
 
 .info-card:hover {
@@ -418,7 +420,6 @@ html {
 /* ================= MOBILE RESPONSIVE ================= */
 
 @media screen and (max-width: 768px) {
-
   .wrapper {
     flex-direction: column;
     align-items: center;
