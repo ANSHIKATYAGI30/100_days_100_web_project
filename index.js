@@ -105,9 +105,10 @@ function loadProjects() {
 
       const isRoot = !window.location.pathname.includes('/contributors/');
       const base = isRoot ? '' : '../';
-     const projectsUrl =
-new URL(`${base}projects.json`,
-window.location.href).toString();
+      const projectsUrl = new URL(
+        `${base}projects.json`,
+        window.location.href
+      ).toString();
       try {
         const response = await fetch(projectsUrl);
         if (!response.ok) {
