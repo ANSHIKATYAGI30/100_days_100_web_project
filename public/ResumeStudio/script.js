@@ -1205,7 +1205,8 @@ function initResumeStudio() {
         
         if (availableWidth > 0 && availableWidth < targetWidth) {
             const ratio = Math.max(0.1, availableWidth / targetWidth);
-            resumePreview.style.zoom = ratio;
+            resumePreview.style.transform = `scale(${ratio})`;
+            resumePreview.style.transformOrigin = "top center";
         } else {
             resumePreview.style.zoom = "1";
         }
