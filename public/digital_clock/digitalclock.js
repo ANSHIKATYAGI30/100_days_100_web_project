@@ -743,5 +743,5 @@ function applyDarkMode(enabled) {
 }
 
 function toggleDarkMode() {
-  applyDarkMode(!isDarkMode);
+applyDarkMode(!isDarkMode);
 }
