@@ -103,18 +103,61 @@ function calcStrength() {
 }
 
 function updateSuggestions() {
-    let missing = [];
+    if (!suggestionsText) return;
 
-    if (!uppercaseCheck.checked) missing.push("uppercase letters");
-    if (!lowercaseCheck.checked) missing.push("lowercase letters");
-    if (!numbersCheck.checked) missing.push("numbers");
-    if (!symbolsCheck.checked) missing.push("symbols");
+    const hasUpper = uppercaseCheck.checked;
+    const hasLower = lowercaseCheck.checked;
+    const hasNum = numbersCheck.checked;
+    const hasSym = symbolsCheck.checked;
+    const suggestions = [];
+    const strength = strengthText ? strengthText.innerText : "";
 
-    if (missing.length === 0) {
+    if (strength === "Strong") {
         suggestionsText.innerText = "Looking good! All options selected.";
         suggestionsText.style.color = "#2dd4bf";
+        return;
+    }
+
+    if (hasUpper && hasLower && hasNum && hasSym) {
+        suggestionsText.innerText = "Looking good! All options selected.";
+        suggestionsText.style.color = "#2dd4bf";
+        return;
+    }
+
+    if (strength === "Medium") {
+        if (!(hasUpper && hasLower)) {
+            if (!hasUpper) suggestions.push("Include uppercase letters");
+            if (!hasLower) suggestions.push("Include lowercase letters");
+        }
+
+        if (!(hasNum || hasSym)) {
+            suggestions.push("Include numbers or symbols");
+        }
+
+        if (passwordLength < 8) {
+            suggestions.push("Increase length to at least 8");
+        }
     } else {
-        suggestionsText.innerText = "Suggestions: Include " + missing.join(", ");
+        if (!(hasLower || hasUpper)) {
+            suggestions.push("Include lowercase or uppercase letters");
+        } else {
+            if (!hasLower) suggestions.push("Include lowercase letters");
+            if (!hasUpper) suggestions.push("Include uppercase letters");
+        }
+
+        if (!(hasNum || hasSym)) {
+            suggestions.push("Include numbers or symbols");
+        }
+
+        if (passwordLength < 6) {
+            suggestions.push("Increase length to at least 6");
+        }
+    }
+
+    if (suggestions.length === 0) {
+        suggestionsText.innerText = "";
+    } else {
+        suggestionsText.innerText = "Suggestions: " + suggestions.join(", ");
         suggestionsText.style.color = "var(--vb-yellow)";
     }
 }

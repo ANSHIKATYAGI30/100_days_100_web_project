@@ -1476,6 +1476,7 @@ input:focus,
 }
 
 .card-name {
+  margin: 0;
   font-family: 'Inter Tight', sans-serif;
   font-size: 1.02rem;
   font-weight: 700;
@@ -2629,6 +2630,8 @@ body.light-mode .noise-layer {
 }
 
 
+} /* end @media (max-width: 768px) */
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -2649,6 +2652,21 @@ body.light-mode .noise-layer {
 
   .hero-terminal {
     opacity: 0.35;
+  }
+
+  /* ── Global accessibility override ──────────────────────────
+     Catches every animation / transition / smooth-scroll that
+     the component-specific rules above may not cover.
+     Using 0.01ms (not 0) keeps JS animationend events firing
+     so interactive components don't break.
+  ────────────────────────────────────────────────────────── */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
 
