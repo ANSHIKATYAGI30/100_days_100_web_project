@@ -1,13 +1,23 @@
 {% extends 'base.html' %}
 {% block content %}
 <div class="mt-10">
-    <h1 class="text-2xl font-bold mb-2">Dashboard</h1>
+    <h1 class="text-2xl font-bold mb-4">Dashboard</h1>
 
-<p class="text-gray-600 mb-4">
-    Total Contacts: {{ contact_count }}
-</p>
-    <input type="text" id="search" placeholder="Search contacts..." class="w-full p-2 mb-4 border border-gray-300 rounded">
-    <a href="{{ url_for('add_contact') }}" class="bg-blue-600 text-white px-4 py-2 rounded">Add Contact</a>
+<input type="text" id="search" placeholder="Search contacts..."
+       class="w-full p-2 mb-4 border border-gray-300 rounded">
+
+<form method="GET" action="{{ url_for('dashboard') }}" class="mb-4">
+    <select name="sort" onchange="this.form.submit()"
+        class="border border-gray-300 rounded p-2">
+        <option value="asc">Sort A-Z</option>
+        <option value="desc">Sort Z-A</option>
+    </select>
+</form>
+
+<a href="{{ url_for('add_contact') }}"
+   class="bg-blue-600 text-white px-4 py-2 rounded">
+   Add Contact
+</a>
     <ul id="contactList" class="mt-4 space-y-2">
         {% for contact in contacts %}
         <li class="bg-white p-4 rounded shadow flex justify-between items-center contact-item">
