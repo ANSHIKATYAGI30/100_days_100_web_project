@@ -54,7 +54,9 @@ app.get('/file', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'file_uploader.html'));
 });
 
-app.post("/upload", upload.array("myFile"), (req, res) => {
+const MAX_FILES = 10;
+
+app.post("/upload", upload.array("myFile", MAX_FILES), (req, res) => {
     console.log("Body: ", req.body);
     console.log("Files: ", req.files);
 
