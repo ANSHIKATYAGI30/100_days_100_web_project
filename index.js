@@ -311,6 +311,7 @@ function buildProjectCardHTML({
   tags,
   category,
   isBookmarked = false,
+  isCompleted = false,
   showDescription = true,
 }) {
   const { demoUrl, sourceUrl, sourceOnly } = resolveProjectUrls(
@@ -356,17 +357,17 @@ function buildProjectCardHTML({
   // SECURITY: href values come from sanitizeUrl() — not raw contributor data.
   // data-id uses escapeHTML so it cannot break out of the attribute.
   const primaryLink = sourceOnly
-    ? `<a href="${safeSourceUrl}" target="_blank" class="card-link open-project" data-id="${safeDay}" rel="noopener noreferrer" onclick="event.stopPropagation()">
-                        <i class="fab fa-github"></i> Source
+    ? `<a href="${safeSourceUrl}" target="_blank" class="card-link open-project" data-id="${safeDay}" rel="noopener noreferrer" onclick="event.stopPropagation()" aria-label="View source of ${safeName} (opens in a new tab)">
+                        <i class="fab fa-github" aria-hidden="true"></i> Source
                     </a>`
-    : `<a href="${safeDemoUrl}" target="_blank" class="card-link open-project" data-id="${safeDay}" rel="noopener noreferrer" onclick="event.stopPropagation()">
-                        Demo <i class="fas fa-arrow-right"></i>
+    : `<a href="${safeDemoUrl}" target="_blank" class="card-link open-project" data-id="${safeDay}" rel="noopener noreferrer" onclick="event.stopPropagation()" aria-label="View demo of ${safeName} (opens in a new tab)">
+                        Demo <i class="fas fa-arrow-right" aria-hidden="true"></i>
                     </a>`;
 
   const codeLink = sourceOnly
     ? ""
-    : `<a href="${safeSourceUrl}" target="_blank" class="card-link view-code-link" rel="noopener noreferrer" onclick="event.stopPropagation()">
-                        <i class="fab fa-github"></i> Code
+    : `<a href="${safeSourceUrl}" target="_blank" class="card-link view-code-link" rel="noopener noreferrer" onclick="event.stopPropagation()" aria-label="View source code of ${safeName} on GitHub (opens in a new tab)">
+                        <i class="fab fa-github" aria-hidden="true"></i> Code
                     </a>`;
 
 return {
@@ -398,9 +399,14 @@ return {
                     ${primaryLink}
                     ${codeLink}
                 </div>
-                <button class="bookmark-btn ${isBookmarked ? "active" : ""}" data-id="${safeDay}">
-                    <i class="${isBookmarked ? "fa-solid" : "fa-regular"} fa-bookmark"></i>
-                </button>
+                <div class="card-actions-right" style="display: flex; gap: 8px; align-items: center;">
+                    <button class="complete-btn ${isCompleted ? "active" : ""}" data-id="${safeDay}" title="${isCompleted ? 'Mark as Not Done' : 'Mark as Done'}" aria-label="${isCompleted ? `Mark ${safeName} as incomplete` : `Mark ${safeName} as complete`}">
+                        <i class="${isCompleted ? "fa-solid" : "fa-regular"} fa-circle-check" aria-hidden="true"></i>
+                    </button>
+                    <button class="bookmark-btn ${isBookmarked ? "active" : ""}" data-id="${safeDay}" aria-label="${isBookmarked ? `Remove ${safeName} from bookmarks` : `Bookmark ${safeName}`}">
+                        <i class="${isBookmarked ? "fa-solid" : "fa-regular"} fa-bookmark" aria-hidden="true"></i>
+                    </button>
+                </div>
             </div>
         `,
     demoUrl: safeDemoUrl,
@@ -410,7 +416,8 @@ return {
 
 function attachProjectCardInteraction(card, demoUrl, projectData = null) {
   card.style.cursor = "pointer";
-  card.onclick = (e) => {
+  
+  const activateCard = (e) => {
     if (e.target.closest("a, button")) return;
     if (!demoUrl) return;
 
@@ -423,6 +430,18 @@ function attachProjectCardInteraction(card, demoUrl, projectData = null) {
     // window.open() so a javascript: payload stored in localStorage cannot
     // execute even after a page reload.
     window.open(sanitizeUrl(demoUrl), "_blank", "noopener");
+  };
+
+  card.onclick = activateCard;
+
+  card.onkeydown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      // Prevent page scrolling on spacebar when card is focused
+      if (e.key === " ") {
+        e.preventDefault();
+      }
+      activateCard(e);
+    }
   };
 }
 
@@ -550,6 +569,7 @@ function updateTechFilterDisplay() {
 
     const icon = document.createElement("i");
     icon.className = "fas fa-times";
+    icon.setAttribute("aria-hidden", "true");
     btn.appendChild(icon);
 
     // addEventListener keeps the handler in JS — the tech value never
@@ -590,11 +610,14 @@ function getAllTechnologies() {
 
 let bookmarkedProjects = [];
 let recentProjects = [];
+let completedProjects = [];
 
 try {
   bookmarkedProjects =
     JSON.parse(localStorage.getItem("bookmarkedProjects")) || [];
   recentProjects = JSON.parse(localStorage.getItem("recentProjects")) || [];
+  completedProjects =
+    JSON.parse(localStorage.getItem("completedProjects")) || [];
 } catch (error) {
   console.warn(
     "localStorage is not available or access is denied:",
@@ -927,6 +950,10 @@ function renderGrid() {
       (item) => normalizeProjectEntry(item).day === day,
     );
 
+    const isCompleted = completedProjects.some(
+      (item) => normalizeProjectEntry(item).day === day,
+    );
+
     const { html, demoUrl, sourceOnly } = buildProjectCardHTML({
       day,
       name,
@@ -934,6 +961,7 @@ function renderGrid() {
       tags,
       category,
       isBookmarked,
+      isCompleted,
       showDescription: true,
     });
 
@@ -942,6 +970,8 @@ function renderGrid() {
       : "project-card visible";
 
     card.innerHTML = html;
+    card.setAttribute("tabindex", "0");
+    card.setAttribute("role", "button");
     attachProjectCardInteraction(card, demoUrl, project);
 
     fragment.appendChild(card);
@@ -1003,7 +1033,7 @@ function renderPagination(totalItems, totalPages) {
 
   const prevBtn = document.createElement("button");
   prevBtn.className = "prev-btn";
-  prevBtn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+  prevBtn.innerHTML = '<i class="fas fa-chevron-left" aria-hidden="true"></i>';
   prevBtn.disabled = currentPage === 1;
   prevBtn.setAttribute("aria-label", "Previous Page");
   prevBtn.addEventListener("click", (e) => {
@@ -1057,7 +1087,7 @@ function renderPagination(totalItems, totalPages) {
 
   const nextBtn = document.createElement("button");
   nextBtn.className = "next-btn";
-  nextBtn.innerHTML = '<i class="fas fa-chevron-right"></i>';
+  nextBtn.innerHTML = '<i class="fas fa-chevron-right" aria-hidden="true"></i>';
   nextBtn.disabled = currentPage === totalPages;
   nextBtn.setAttribute("aria-label", "Next Page");
   nextBtn.addEventListener("click", (e) => {
@@ -1261,20 +1291,39 @@ function trackRecentProject(project) {
 const bookmarkGrid = document.getElementById("bookmarkGrid");
 
 function normalizeProjectEntry(project) {
+  if (!project) {
+    return {
+      day: "",
+      name: "",
+      url: "",
+      tags: [],
+    };
+  }
+
+  if (typeof project === "string") {
+    const dayStr = project.startsWith("Day ") ? project : `Day ${project}`;
+    return {
+      day: dayStr,
+      name: "",
+      url: "",
+      tags: [],
+    };
+  }
+
   if (Array.isArray(project)) {
     return {
-      day: project[0],
-      name: project[1],
-      url: project[2],
-      tags: project[3],
+      day: project[0] || "",
+      name: project[1] || "",
+      url: project[2] || "",
+      tags: project[3] || [],
     };
   }
 
   return {
-    day: project.day,
-    name: project.projectName || project.name,
-    url: project.projectPath || project.url,
-    tags: project.techStack || project.tags,
+    day: project.day || "",
+    name: project.projectName || project.name || "",
+    url: project.projectPath || project.url || "",
+    tags: project.techStack || project.tags || [],
   };
 }
 
@@ -1305,6 +1354,9 @@ function renderBookmarks() {
     if (!day || !name) return;
 
     const category = getCategoryFromTags(tags, name);
+    const isCompleted = completedProjects.some(
+      (item) => normalizeProjectEntry(item).day === day,
+    );
     
     // Updated to use the secure HTML-string approach
     const { html, demoUrl, sourceOnly } = buildProjectCardHTML({
@@ -1314,6 +1366,7 @@ function renderBookmarks() {
       tags,
       category,
       isBookmarked: true,
+      isCompleted,
       showDescription: true,
     });
 
@@ -1322,6 +1375,8 @@ function renderBookmarks() {
       ? "project-card source-only visible"
       : "project-card visible";
     card.innerHTML = html;
+    card.setAttribute("tabindex", "0");
+    card.setAttribute("role", "button");
 
     attachProjectCardInteraction(card, demoUrl, project);
 
@@ -1365,6 +1420,9 @@ function renderRecentProjects() {
     const isBookmarked = bookmarkedProjects.some(
       (item) => normalizeProjectEntry(item).day === day,
     );
+    const isCompleted = completedProjects.some(
+      (item) => normalizeProjectEntry(item).day === day,
+    );
     
     // Updated to use the secure HTML-string approach
     const { html, demoUrl, sourceOnly } = buildProjectCardHTML({
@@ -1374,6 +1432,7 @@ function renderRecentProjects() {
       tags,
       category,
       isBookmarked,
+      isCompleted,
       showDescription: true,
     });
 
@@ -1382,6 +1441,8 @@ function renderRecentProjects() {
       ? "project-card source-only visible"
       : "project-card visible";
     card.innerHTML = html;
+    card.setAttribute("tabindex", "0");
+    card.setAttribute("role", "button");
 
     attachProjectCardInteraction(card, demoUrl, projectObj);
 
@@ -1854,9 +1915,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   initTechStackSearch();
   initClearAllFilters();
 
+  initStreak();
+  updateGamifiedUI();
+
   try {
     // Await the projects to be fetched
     await loadProjects();
+
+    // Repair and synchronize format of stored completed projects
+    repairCompletedProjects();
+
+    // Refresh gamified UI with project details fully loaded
+    updateGamifiedUI();
 
     syncProjectCounts();
 
@@ -2394,4 +2464,228 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
   window.addEventListener("popstate", () => restoreStateFromURL());
+});
+
+/* ============================================================
+   GAMIFIED DEVELOPER TRACKER ENGINE
+============================================================ */
+
+const LEVEL_THRESHOLDS = [
+  { level: 1, name: "Script Kiddie", xp: 0 },
+  { level: 2, name: "CSS Whisperer", xp: 100 },
+  { level: 3, name: "Frontend Artisan", xp: 250 },
+  { level: 4, name: "DOM Dominator", xp: 500 },
+  { level: 5, name: "Production Ready", xp: 1000 },
+  { level: 6, name: "Full-Stack Magician", xp: 2000 },
+  { level: 7, name: "Software Architect", xp: 4000 }
+];
+
+function getProjectXP(difficulty) {
+  const d = (difficulty || "").toLowerCase().trim();
+  if (d === 'beginner' || d === 'easy') return 10;
+  if (d === 'advanced' || d === 'hard' || d === 'expert') return 50;
+  return 25; // default / intermediate
+}
+
+function calculateTotalXP() {
+  let xp = 0;
+  if (!Array.isArray(completedProjects)) {
+    completedProjects = [];
+  }
+  completedProjects.forEach(p => {
+    if (!p) return;
+    const normP = normalizeProjectEntry(p);
+    const original = PROJECTS.find(item => item.projectName === normP.name || item.day === normP.day);
+    const difficulty = original ? original.difficulty : (p.difficulty || "intermediate");
+    xp += getProjectXP(difficulty);
+  });
+  return xp;
+}
+
+function calculateLevel(xp) {
+  let current = LEVEL_THRESHOLDS[0];
+  for (let i = 0; i < LEVEL_THRESHOLDS.length; i++) {
+    if (xp >= LEVEL_THRESHOLDS[i].xp) {
+      current = LEVEL_THRESHOLDS[i];
+    } else {
+      break;
+    }
+  }
+  return current;
+}
+
+function getNextLevelDetails(xp) {
+  const current = calculateLevel(xp);
+  const currentIndex = LEVEL_THRESHOLDS.findIndex(t => t.level === current.level);
+  if (currentIndex < LEVEL_THRESHOLDS.length - 1) {
+    const next = LEVEL_THRESHOLDS[currentIndex + 1];
+    const prevXPRequired = current.xp;
+    const progressXP = xp - prevXPRequired;
+    const rangeXP = next.xp - prevXPRequired;
+    const percent = Math.min(Math.round((progressXP / rangeXP) * 100), 100);
+    return {
+      nextName: next.name,
+      nextXP: next.xp,
+      percent: percent,
+      remaining: next.xp - xp
+    };
+  } else {
+    return {
+      nextName: "Max Level!",
+      nextXP: xp,
+      percent: 100,
+      remaining: 0
+    };
+  }
+}
+
+function initStreak() {
+  const today = new Date();
+  const todayStr = today.toISOString().split('T')[0];
+  const lastVisit = localStorage.getItem('lastVisitDate');
+  let streak = parseInt(localStorage.getItem('streakCount') || '0', 10);
+
+  if (!lastVisit) {
+    streak = 1;
+  } else {
+    const lastVisitDateObj = new Date(lastVisit);
+    const todayDateObj = new Date(todayStr);
+    const diffTime = todayDateObj.getTime() - lastVisitDateObj.getTime();
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+    if (lastVisit === todayStr) {
+      // Same day, streak unchanged
+    } else if (diffDays === 1) {
+      // Consecutive day!
+      streak += 1;
+    } else {
+      // Gap too large, reset streak
+      streak = 1;
+    }
+  }
+  localStorage.setItem('lastVisitDate', todayStr);
+  localStorage.setItem('streakCount', streak.toString());
+}
+
+function triggerLevelUpModal(levelInfo) {
+  const modal = document.createElement("div");
+  modal.className = "level-up-modal";
+  modal.innerHTML = `
+    <div class="level-up-modal-content">
+      <div class="level-up-star">⭐</div>
+      <h2>LEVEL UP!</h2>
+      <p class="modal-level-text">You have reached Level ${levelInfo.level}</p>
+      <p class="modal-title-text">${levelInfo.name}</p>
+      <button class="level-up-close-btn" onclick="this.closest('.level-up-modal').remove()">LFG! 🚀</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+function updateGamifiedUI(prevLevel = null) {
+  const totalXP = calculateTotalXP();
+  const currentLevel = calculateLevel(totalXP);
+  const nextDetails = getNextLevelDetails(totalXP);
+
+  if (prevLevel && currentLevel.level > prevLevel.level) {
+    triggerLevelUpModal(currentLevel);
+  }
+
+  const userLevelBadge = document.getElementById("userLevelBadge");
+  const userCurrentXP = document.getElementById("userCurrentXP");
+  const userNextXP = document.getElementById("userNextXP");
+  const userXPBarFill = document.getElementById("userXPBarFill");
+
+  if (userLevelBadge) {
+    userLevelBadge.textContent = `Level ${currentLevel.level}: ${currentLevel.name}`;
+  }
+  if (userCurrentXP) {
+    userCurrentXP.textContent = `${totalXP} Total XP`;
+  }
+  if (userNextXP) {
+    if (nextDetails.remaining > 0) {
+      userNextXP.textContent = `${nextDetails.remaining} XP to Level ${currentLevel.level + 1} (${nextDetails.nextName})`;
+    } else {
+      userNextXP.textContent = "Max Level Reached! You are a master.";
+    }
+  }
+  if (userXPBarFill) {
+    userXPBarFill.style.width = `${nextDetails.percent}%`;
+  }
+
+  const userStreakBadge = document.getElementById("userStreakBadge");
+  if (userStreakBadge) {
+    const streak = parseInt(localStorage.getItem("streakCount") || "1", 10);
+    userStreakBadge.textContent = `🔥 ${streak} Day Streak`;
+  }
+}
+
+function repairCompletedProjects() {
+  if (!Array.isArray(completedProjects)) {
+    completedProjects = [];
+    return;
+  }
+  completedProjects = completedProjects.map(item => {
+    if (!item) return null;
+    let day = "";
+    if (typeof item === 'string') {
+      day = item;
+    } else if (Array.isArray(item)) {
+      day = item[0];
+    } else {
+      day = item.day;
+    }
+    const match = PROJECTS.find(p => p.day === day);
+    return match || item;
+  }).filter(Boolean);
+  
+  try {
+    localStorage.setItem("completedProjects", JSON.stringify(completedProjects));
+  } catch (err) {
+    console.warn("Could not save repaired completed projects", err);
+  }
+}
+
+function toggleCompleted(project) {
+  const normProject = normalizeProjectEntry(project);
+  const day = normProject.day;
+  const isCompleted = completedProjects.some(p => normalizeProjectEntry(p).day === day);
+
+  const prevXP = calculateTotalXP();
+  const prevLevel = calculateLevel(prevXP);
+  
+  const difficulty = project.difficulty || normProject.difficulty || "intermediate";
+
+  if (isCompleted) {
+    completedProjects = completedProjects.filter(p => normalizeProjectEntry(p).day !== day);
+    localStorage.setItem("completedProjects", JSON.stringify(completedProjects));
+    showToast(`Removed from Completed: -${getProjectXP(difficulty)} XP`);
+  } else {
+    // Check if not already added to avoid duplicates
+    if (!completedProjects.some(p => normalizeProjectEntry(p).day === day)) {
+      completedProjects.push(project);
+      localStorage.setItem("completedProjects", JSON.stringify(completedProjects));
+    }
+    showToast(`🎉 Project Completed! +${getProjectXP(difficulty)} XP Earned`);
+  }
+
+  updateGamifiedUI(prevLevel);
+
+  renderGrid();
+  if (typeof renderRecentProjects === "function") renderRecentProjects();
+  if (typeof renderBookmarks === "function") renderBookmarks();
+}
+
+// Global click delegation for the complete button
+document.addEventListener("click", (e) => {
+  const completeBtn = e.target.closest(".complete-btn");
+  if (!completeBtn) return;
+
+  e.preventDefault();
+  e.stopPropagation();
+  const projectDay = completeBtn.dataset.id;
+  const project = PROJECTS.find((item) => item.day === projectDay);
+  if (!project) return;
+
+  toggleCompleted(project);
 });
