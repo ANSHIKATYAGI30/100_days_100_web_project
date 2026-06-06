@@ -471,26 +471,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     renderClockGrid();
 
-    if (citySearchInput) {
-      citySearchInput.addEventListener('input', (e) => {
-        renderSearchResults(e.target.value);
-      });
-
-      citySearchInput.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape') {
-          citySearchResults.classList.remove('active');
-        }
-      });
-
-      document.addEventListener('click', (e) => {
-        if (
-          !citySearchInput.contains(e.target) &&
-          !citySearchResults.contains(e.target)
-        ) {
-          citySearchResults.classList.remove('active');
-        }
-      });
-    }
 
     setTimeout(() => {
       const card = document.querySelector(`.world-clock-card[data-id="${id}"]`);
@@ -536,6 +516,26 @@ document.addEventListener('DOMContentLoaded', () => {
   // Call first rendering
   renderClockGrid();
 
+  if (citySearchInput) {
+  citySearchInput.addEventListener('input', (e) => {
+    renderSearchResults(e.target.value);
+  });
+
+  citySearchInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      citySearchResults.classList.remove('active');
+    }
+  });
+
+  document.addEventListener('click', (e) => {
+    if (
+      !citySearchInput.contains(e.target) &&
+      !citySearchResults.contains(e.target)
+    ) {
+      citySearchResults.classList.remove('active');
+    }
+  });
+}
   // Set local timezone label
   const localTzLabel = document.getElementById('local-tz-label');
   if (localTzLabel) {
