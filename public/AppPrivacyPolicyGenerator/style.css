@@ -257,3 +257,22 @@ textarea {
     white-space: pre-wrap;
     line-height: 1.5;
 }
+
+.template-toolbar{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+    margin-bottom:20px;
+}
+
+.template-toolbar select{
+    flex:1;
+    min-width:220px;
+    padding:.9rem;
+    border:1px solid var(--border);
+    border-radius:8px;
+}
+
+.template-toolbar button{
+    width:auto;
+}
