@@ -1911,12 +1911,20 @@
   "difficulty": "intermediate",
   "projectDesc": "A responsive Kanban Board application featuring drag-and-drop task management, task creation, editing, deletion, local storage persistence, and dark/light theme support."
 },
+{
+    "projectNo": 210,
+    "projectName": "Cricket Scorecard",
+    "projectPath": "./public/Cricket-Scorecard/index.html",
+    "techStack": ["html", "css", "javascript"],
+    "difficulty": "advanced",
+    "projectDesc": "A tool to view the schedule of upcoming matches and watch live scorecard."
+  },
   {
-  "projectNo": 210,
-  "projectName": "Cricket Scorecard",
-  "projectPath": "./public/Cricket-Scorecard/index.html",
-  "techStack": ["html", "css", "javascript"],
-  "difficulty": "advanced",
-  "projectDesc": "A tool to view the schedule of upcoming matches and watch live scorecard."
-}
+    "projectNo": 211,
+    "projectName": "Tower Blocks Stacker",
+    "projectPath": "./public/tower_stacker/index.html",
+    "techStack": ["html", "css", "javascript", "canvas"],
+    "difficulty": "advanced",
+    "projectDesc": "A responsive physics-inspired arcade game challenging users to stack moving horizontal blocks cleanly. Implements strict boundary checking, block-slicing logic, dynamic camera tracking, and interactive start/pause state controls."
+  }
 ]
