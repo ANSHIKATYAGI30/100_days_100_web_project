@@ -114,6 +114,7 @@
   <script>
     document.addEventListener('DOMContentLoaded', () => {
         const fetchBtn = document.getElementById('fetchBtn');
+        const againBtn = document.getElementById('againBtn');
         const resultBox = document.getElementById('resultBox');
         const activityName = document.getElementById('activityName');
 
@@ -180,6 +181,171 @@
                 }, 200);
             });
         }
+        // Centralized execution logic so both Find and Shuffle use the exact same functional filter
+        function performFiltering() {
+            const targetCategory = document.getElementById('category').value;
+            const targetParticipants = document.getElementById('participants').value;
+            const targetBudget = document.getElementById('budget').value;
+
+            const filteredActivities = localActivities.filter(act => {
+                if (targetCategory && act.type !== targetCategory) return false;
+                if (targetParticipants && act.participants !== parseInt(targetParticipants)) return false;
+                if (targetBudget && act.cost !== targetBudget) return false;
+                return true;
+            });
+
+            if (filteredActivities.length > 0) {
+                const randomIndex = Math.floor(Math.random() * filteredActivities.length);
+                const choice = filteredActivities[randomIndex];
+
+                if (activityName) activityName.textContent = choice.activity;
+                
+                const t = document.getElementById('pillType');
+                const p = document.getElementById('pillPeeps');
+                const c = document.getElementById('pillCost');
+                
+                if (t) t.textContent = `Type: ${choice.type}`;
+                if (p) p.textContent = `Peeps: ${choice.participants}`;
+                if (c) c.textContent = `Cost: ${choice.cost.charAt(0).toUpperCase() + choice.cost.slice(1)}`;
+            } else {
+                if (activityName) activityName.textContent = "No activities found matching those filters! Try changing your values.";
+                document.getElementById('pillType').textContent = "Type: None";
+                document.getElementById('pillPeeps').textContent = "Peeps: -";
+                document.getElementById('pillCost').textContent = "Cost: -";
+            }
+        }
+
+        if (fetchBtn) {
+            fetchBtn.addEventListener('click', () => {
+                fetchBtn.textContent = "Seeking...";
+                setTimeout(() => {
+                    performFiltering();
+                    fetchBtn.textContent = "Find Activity";
+                }, 200);
+            });
+        }
+
+        // Connect your alternate secondary shuffle button to the exact same rendering logic
+        if (againBtn) {
+            againBtn.addEventListener('click', () => {
+                performFiltering();
+            });
+        }
+
+
+        // --- PROGRESS & MILESTONE TRACKING ENGINE ---
+
+        let currentActivityText = ""; 
+
+        const completeBtn = document.getElementById('completeBtn');
+        const progressCard = document.getElementById('progressCard');
+        const completedCountEl = document.getElementById('completedCount');
+        const badges = document.querySelectorAll('.badges .badge');
+        const toast = document.getElementById('toast');
+
+        if (progressCard) progressCard.removeAttribute('hidden');
+
+        // Mutation listener watcher targeting text mutations across both actions
+        function syncActiveActivity() {
+            setTimeout(() => {
+                const currentName = document.getElementById('activityName').textContent;
+                const savedData = localStorage.getItem('user_progress');
+                const progress = savedData ? JSON.parse(savedData) : { completedActivities: [] };
+
+                if (currentName && !currentName.startsWith("Ready!") && !currentName.startsWith("No activities")) {
+                    currentActivityText = currentName;
+                    
+                    if (completeBtn) {
+                        if (progress.completedActivities.includes(currentActivityText)) {
+                            completeBtn.textContent = "🎉 Completed!";
+                            completeBtn.disabled = true;
+                        } else {
+                            completeBtn.textContent = "✅ Done";
+                            completeBtn.disabled = false;
+                        }
+                    }
+                } else {
+                    currentActivityText = "";
+                }
+            }, 250);
+        }
+
+        if (fetchBtn) fetchBtn.addEventListener('click', syncActiveActivity);
+        if (againBtn) againBtn.addEventListener('click', syncActiveActivity);
+
+        function initProgress() {
+            const savedData = localStorage.getItem('user_progress');
+            let progress = savedData ? JSON.parse(savedData) : { completedActivities: [] };
+            
+            if (!progress.completedActivities) {
+                progress = { completedActivities: [] };
+            }
+            updateUI(progress.completedActivities);
+        }
+
+        if (completeBtn) {
+            completeBtn.addEventListener('click', () => {
+                if (!currentActivityText) {
+                    showToast("❌ Generate an activity first!");
+                    return;
+                }
+
+                const savedData = localStorage.getItem('user_progress');
+                let progress = savedData ? JSON.parse(savedData) : { completedActivities: [] };
+
+                if (progress.completedActivities.includes(currentActivityText)) {
+                    showToast("🧠 You've already completed this activity!");
+                    return;
+                }
+
+                progress.completedActivities.push(currentActivityText);
+                localStorage.setItem('user_progress', JSON.stringify(progress));
+
+                completeBtn.textContent = "🎉 Completed!";
+                completeBtn.disabled = true;
+
+                updateUI(progress.completedActivities, true);
+            });
+        }
+
+        function updateUI(completedList, triggerCelebration = false) {
+            const count = completedList.length;
+            
+            if (completedCountEl) {
+                completedCountEl.textContent = count;
+            }
+
+            badges.forEach(badge => {
+                const target = parseInt(badge.getAttribute('data-target'));
+                
+                if (count >= target) {
+                    if (badge.classList.contains('locked')) {
+                        badge.classList.remove('locked');
+                        badge.classList.add('unlocked');
+                        
+                        if (triggerCelebration) {
+                            showToast(`🏆 Achievement Unlocked: ${badge.textContent}!`);
+                        }
+                    } else {
+                        badge.classList.remove('locked');
+                        badge.classList.add('unlocked');
+                    }
+                }
+            });
+        }
+
+        function showToast(message) {
+            if (!toast) return;
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            // Fixed timing structure window: 3000ms gives your notification time to look great
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        initProgress();
     });
   </script>
 </body>
