@@ -1,6 +1,0 @@
-node_modules/
-.git/
-.github/
-package-lock.json
-*.min.js
-*.min.css
