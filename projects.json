@@ -2807,8 +2807,10 @@
     "difficulty": "advanced",
     "projectPath": "./public/bus_game/index.html" 
     },
+
+    
   {
-    "projectNo": 223,
+    "projectNo": 222,
     "projectName": "HTML & CSS Animation",
     "projectType": "Web Application",
     "projectDesc": "Collection of HTML/CSS animations demonstrating keyframe effects and transitions.",
@@ -2819,6 +2821,16 @@
     ],
     "difficulty": "beginner",
     "projectPath": "./public/Html_css_animation/index.html"
+    },
+  {
+    "projectNo": 223,
+    "projectName": "Bus Game",
+    "projectType": "game",
+    "projectDesc": "A modern bus game with lane and vehicles.",
+    "techStack": ["javascript", "html", "css"],
+    "difficulty": "advanced",
+    "projectPath": "./public/bus_game/index.html"
+
   },
   {
     "projectNo": 224,
