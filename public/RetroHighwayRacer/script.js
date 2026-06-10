@@ -165,7 +165,8 @@ document.addEventListener('DOMContentLoaded', () => {
         crashScreen.style.display = 'none';
         pauseScreen.style.display = 'none';
         pauseBtn.style.display = 'flex';
-        document.getElementById('mute-btn').style.display = 'flex';
+        const muteBtnElement = document.getElementById('mute-btn');
+        if (muteBtnElement) muteBtnElement.style.display = 'flex';
         
         // --- THIS IS THE FIX ---
         // We reset the position here to guarantee it's centered every single time
@@ -322,7 +323,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
         crashScreen.style.display = 'flex';
         pauseBtn.style.display = 'none';
-        document.getElementById('mute-btn').style.display = 'none'; 
+        const muteBtnElement2 = document.getElementById('mute-btn');
+        if (muteBtnElement2) muteBtnElement2.style.display = 'none'; 
     };
 
     const togglePause = () => {
