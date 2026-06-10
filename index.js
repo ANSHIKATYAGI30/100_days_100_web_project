@@ -245,14 +245,6 @@ function getProjectDescription(project) {
   );
 }
 
-/**
- * Escape a plain string so it is safe to inject into HTML text content
- * or attribute values (when quoted with double quotes).
- *
- * SECURITY: This is the primary XSS defence for every piece of
- * contributor-supplied data that ends up inside innerHTML / template
- * literals.  Call it on EVERY untrusted value before inserting into HTML.
- */
 function escapeHTML(value) {
   return String(value)
     .replace(/&/g, "&amp;")
@@ -262,33 +254,11 @@ function escapeHTML(value) {
     .replace(/'/g, "&#39;");
 }
 
-/**
- * Sanitize a URL so it can be used safely in an href attribute.
- *
- * SECURITY: Blocks javascript:, data:, vbscript: and any other
- * non-http(s)/relative protocol that could execute code when a user
- * clicks a link.  Falls back to "#" so the link is inert rather than
- * omitted, which keeps the UI layout intact.
- *
- * Allowed schemes:
- * - https://    (absolute external links, GitHub, live demos)
- * - http://     (legacy / local dev)
- * - ./  ../     (relative paths to local demo index.html files)
- * - #           (in-page anchors)
- *
- * Everything else — including javascript:, data:, vbscript:,
- * blob: and protocol-relative // URLs — is replaced with "#".
- *
- * @param {string} url - Raw URL from project data or localStorage.
- * @returns {string} A URL that is safe to place in an href attribute.
- */
 function sanitizeUrl(url) {
   const raw = String(url || "").trim();
 
-  // Allow empty / anchor-only values
   if (!raw || raw === "#") return raw || "#";
 
-  // Allow relative paths used by project demos
   if (
     raw.startsWith("./") ||
     raw.startsWith("../") ||
@@ -305,12 +275,10 @@ function sanitizeUrl(url) {
     return raw;
   }
 
-  // Allow http/https links
   if (/^https?:\/\//i.test(raw)) {
     return raw;
   }
 
-  // Block unsafe schemes
   console.warn("[XSS] Blocked unsafe URL scheme:", raw);
   return "#";
 }
@@ -322,7 +290,6 @@ function buildProjectCardHTML({
   tags,
   category,
   isBookmarked = false,
-  isCompleted = false,
   showDescription = true,
 }) {
   const { demoUrl, sourceUrl, sourceOnly } = resolveProjectUrls(
@@ -332,14 +299,8 @@ function buildProjectCardHTML({
     tags,
   );
 
-  // ── SECURITY: sanitize URLs before placing them in href attributes ──
-  // resolveProjectUrls may return a contributor-supplied string or a path
-  // derived from one.  sanitizeUrl() blocks javascript:, data:, vbscript:
-  // and any other executable protocol while leaving valid http(s) / relative
-  // paths untouched.
   const safeDemoUrl = sanitizeUrl(demoUrl);
   const safeSourceUrl = sanitizeUrl(sourceUrl);
-
 
   const tagsArray = Array.isArray(tags)
     ? tags.filter((t) => t !== SOURCE_ONLY_TAG)
@@ -353,8 +314,6 @@ function buildProjectCardHTML({
 
   const project = PROJECTS_BY_NAME.get(name) || PROJECTS_BY_DAY.get(day);
 
-  // SECURITY: description, day, name and category are all escaped before
-  // being written into innerHTML.
   const description = escapeHTML(getProjectDescription(project));
   const safeDay = escapeHTML(day);
   const safeName = escapeHTML(name);
@@ -416,9 +375,6 @@ function buildProjectCardHTML({
                     ${codeLink}
                 </div>
                 <div class="card-actions-right" style="display: flex; gap: 8px; align-items: center;">
-                    <button class="complete-btn ${isCompleted ? "active" : ""}" data-id="${safeDay}" title="${isCompleted ? 'Mark as Not Done' : 'Mark as Done'}" aria-label="${isCompleted ? `Mark ${safeName} as incomplete` : `Mark ${safeName} as complete`}">
-                        <i class="${isCompleted ? "fa-solid" : "fa-regular"} fa-circle-check" aria-hidden="true"></i>
-                    </button>
                     <button class="bookmark-btn ${isBookmarked ? "active" : ""}" data-id="${safeDay}" aria-label="${isBookmarked ? `Remove ${safeName} from bookmarks` : `Bookmark ${safeName}`}">
                         <i class="${isBookmarked ? "fa-solid" : "fa-regular"} fa-bookmark" aria-hidden="true"></i>
                     </button>
@@ -564,14 +520,11 @@ function getAllTechnologies() {
 
 let bookmarkedProjects = [];
 let recentProjects = [];
-let completedProjects = [];
 
 try {
   bookmarkedProjects =
     JSON.parse(localStorage.getItem("bookmarkedProjects")) || [];
   recentProjects = JSON.parse(localStorage.getItem("recentProjects")) || [];
-  completedProjects =
-    JSON.parse(localStorage.getItem("completedProjects")) || [];
 } catch (error) {
   console.warn(
     "localStorage is not available or access is denied:",
@@ -583,7 +536,7 @@ let showAllBookmarks = false;
 let showAllRecent = false;
 
 const INITIAL_VISIBLE_ITEMS = 3;
-const ONE_HOUR_MS = 60 * 60 * 1000; // 1 hour in milliseconds
+const ONE_HOUR_MS = 60 * 60 * 1000;
 
 function migrateRecentProjects() {
   if (recentProjects.length === 0) return;
@@ -890,10 +843,6 @@ function renderGrid() {
 
     const isBookmarked = bookmarkedDays.has(day);
 
-    const isCompleted = completedProjects.some(
-      (item) => normalizeProjectEntry(item).day === day,
-    );
-
     const { html, demoUrl, sourceOnly } = buildProjectCardHTML({
       day,
       name,
@@ -901,7 +850,6 @@ function renderGrid() {
       tags,
       category,
       isBookmarked,
-      isCompleted,
       showDescription: true,
     });
 
@@ -1273,10 +1221,7 @@ function renderBookmarks() {
     if (!day || !name) return;
 
     const category = getCategoryFromTags(tags, name);
-    const isCompleted = completedProjects.some(
-      (item) => normalizeProjectEntry(item).day === day,
-    );
-    
+
     const { html, demoUrl, sourceOnly } = buildProjectCardHTML({
       day,
       name,
@@ -1284,7 +1229,6 @@ function renderBookmarks() {
       tags,
       category,
       isBookmarked: true,
-      isCompleted,
       showDescription: true,
     });
 
@@ -1336,10 +1280,7 @@ function renderRecentProjects() {
     const isBookmarked = bookmarkedProjects.some(
       (item) => normalizeProjectEntry(item).day === day,
     );
-    const isCompleted = completedProjects.some(
-      (item) => normalizeProjectEntry(item).day === day,
-    );
-    
+
     const { html, demoUrl, sourceOnly } = buildProjectCardHTML({
       day,
       name,
@@ -1347,7 +1288,6 @@ function renderRecentProjects() {
       tags,
       category,
       isBookmarked,
-      isCompleted,
       showDescription: true,
     });
 
@@ -1821,8 +1761,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   try {
     await loadProjects();
-
-    repairCompletedProjects();
 
     updateGamifiedUI();
 
@@ -2377,7 +2315,6 @@ document.addEventListener("DOMContentLoaded", () => {
    GAMIFIED DEVELOPER TRACKER ENGINE
 ============================================================ */
 
-// Level configuration constants
 const LEVEL_THRESHOLDS = [
   { level: 1, name: "Script Kiddie", xp: 0 },
   { level: 2, name: "CSS Whisperer", xp: 100 },
@@ -2388,28 +2325,13 @@ const LEVEL_THRESHOLDS = [
   { level: 7, name: "Software Architect", xp: 4000 }
 ];
 
-// Helper: Calculate XP based on difficulty level
 function getProjectXP(difficulty) {
   const d = (difficulty || "").toLowerCase().trim();
   if (d === 'beginner' || d === 'easy') return 10;
   if (d === 'advanced' || d === 'hard' || d === 'expert') return 50;
-  return 25; // Default for intermediate
+  return 25;
 }
 
-// Calculate total accumulated XP from the in-memory completedProjects array
-function calculateTotalXP() {
-  let xp = 0;
-  completedProjects.forEach(p => {
-    const normalized = normalizeProjectEntry(p);
-    // Look up full project data for difficulty, falling back to stored difficulty
-    const fullProject = PROJECTS_BY_DAY.get(normalized.day);
-    const difficulty = (fullProject && fullProject.difficulty) || p.difficulty || "intermediate";
-    xp += getProjectXP(difficulty);
-  });
-  return xp;
-}
-
-// Determine current level based on total XP
 function calculateLevel(xp) {
   let current = LEVEL_THRESHOLDS[0];
   for (let t of LEVEL_THRESHOLDS) {
@@ -2419,125 +2341,20 @@ function calculateLevel(xp) {
   return current;
 }
 
-/**
- * Repair and normalize any legacy entries in completedProjects.
- *
- * Old format may be plain day strings ("Day 5"), arrays, or objects
- * without a .day property.  After repair every entry is a plain object
- * with at least { day }.  This runs once on DOMContentLoaded after
- * PROJECTS is hydrated.
- */
-function repairCompletedProjects() {
-  completedProjects = completedProjects.map((entry) => {
-    const normalized = normalizeProjectEntry(entry);
-    // Merge full project data so difficulty is always available
-    const fullProject = PROJECTS_BY_DAY.get(normalized.day);
-    return fullProject
-      ? { ...fullProject }
-      : { day: normalized.day, name: normalized.name, url: normalized.url, tags: normalized.tags };
-  }).filter((entry) => Boolean(entry.day));
-
-  try {
-    localStorage.setItem("completedProjects", JSON.stringify(completedProjects));
-  } catch (error) {
-    console.warn("Could not persist repaired completedProjects:", error.message);
-  }
-}
-
-/**
- * Toggle completion status for a project.
- *
- * FIX: Previously this function read from localStorage directly into a local
- * variable, mutated it, then called renderGrid() — but renderGrid() reads
- * from the module-level `completedProjects` array which was never updated,
- * so the button state never changed visually.
- *
- * Now we mutate the module-level `completedProjects` array in-place and
- * persist it, matching the pattern used by toggleBookmark().
- */
-function toggleCompleted(project) {
-  // Normalise to get a reliable .day key regardless of input shape
-  const projectDay = normalizeProjectEntry(project).day;
-
-  const isCompleted = completedProjects.some(
-    (item) => normalizeProjectEntry(item).day === projectDay,
-  );
-
-  // Look up full project data so we have the difficulty for XP calculation
-  const fullProject = PROJECTS_BY_DAY.get(projectDay) || project;
-  const difficulty = fullProject.difficulty || project.difficulty || "intermediate";
-
-  if (isCompleted) {
-    // Remove from module-level array
-    completedProjects = completedProjects.filter(
-      (item) => normalizeProjectEntry(item).day !== projectDay,
-    );
-    showToast(`Removed from Completed: -${getProjectXP(difficulty)} XP`);
-  } else {
-    // Push the full project object so difficulty is preserved for XP calcs
-    completedProjects.push(fullProject);
-    showToast(`🎉 Project Completed! +${getProjectXP(difficulty)} XP Earned`);
-  }
-
-  // Persist updated array to localStorage
-  try {
-    localStorage.setItem("completedProjects", JSON.stringify(completedProjects));
-  } catch (error) {
-    console.warn("Could not save completed projects:", error.message);
-  }
-
-  // Sync all UI surfaces that reflect completion state
-  updateGamifiedUI();
-  renderGrid();
-  renderBookmarks();
-  renderRecentProjects();
-}
-
-// Global click handler for the "Complete" button
-document.addEventListener("click", (e) => {
-  const completeBtn = e.target.closest(".complete-btn");
-  if (!completeBtn) return;
-
-  e.preventDefault();
-  e.stopPropagation();
-
-  const projectDay = completeBtn.dataset.id;
-  const project = PROJECTS.find((item) => item.day === projectDay);
-
-  if (project) {
-    toggleCompleted(project);
-  }
-});
-
-/**
- * UI UPDATE HELPER
- * Only updates if elements are found on the page (e.g., on tracker.html)
- */
 function updateGamifiedUI() {
-  const totalXP = calculateTotalXP();
-  const currentLevel = calculateLevel(totalXP);
-
+  // Gamified UI elements live on tracker.html, not index.html — no-op here.
   const elements = {
     badge: document.getElementById("userLevelBadge"),
     xpText: document.getElementById("userCurrentXP"),
     bar: document.getElementById("userXPBarFill")
   };
 
+  if (!elements.badge && !elements.xpText && !elements.bar) return;
+
+  const totalXP = 0;
+  const currentLevel = calculateLevel(totalXP);
+
   if (elements.badge) elements.badge.textContent = `Level ${currentLevel.level}: ${currentLevel.name}`;
   if (elements.xpText) elements.xpText.textContent = `${totalXP} Total XP`;
-
-  // Update XP progress bar if present
-  if (elements.bar) {
-    const nextThreshold = LEVEL_THRESHOLDS.find(t => t.xp > totalXP);
-    if (nextThreshold) {
-      const prevXP = currentLevel.xp;
-      const rangeXP = nextThreshold.xp - prevXP;
-      const progressXP = totalXP - prevXP;
-      const pct = Math.min(100, Math.round((progressXP / rangeXP) * 100));
-      elements.bar.style.width = `${pct}%`;
-    } else {
-      // Max level — fill the bar
-      elements.bar.style.width = "100%";
-    }
-  }
+  if (elements.bar) elements.bar.style.width = "0%";
 }
