@@ -2834,5 +2834,19 @@
     ],
     "difficulty": "intermediate",
     "projectPath": "./public/Bubble-Game/index.html"
+  },
+  {
+    "projectNo": 225,
+    "projectName": "Word Jumble",
+    "projectType": "Game",
+    "projectDesc": "A fun word puzzle game where players unscramble letters to form valid words within a time limit.",
+    "techStack": [
+      "html",
+      "css",
+      "javascript",
+      "game"
+    ],
+    "difficulty": "advanced",
+    "projectPath": "./public/Word_Jumble/index.html"
   }
 ]
