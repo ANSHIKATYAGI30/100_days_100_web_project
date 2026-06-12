@@ -79,6 +79,9 @@
   position: relative;
   overflow: hidden;
 }
+[data-theme="dark"] .page-title {
+  color: white;
+}
 
 .card-img {
   width: 100%;
