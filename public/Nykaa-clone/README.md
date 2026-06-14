@@ -6,7 +6,7 @@ A pixel-faithful front-end clone of the [Nykaa Fashion](https://www.nykaa.com/fa
 
 ## 📸 Preview
 
-[Preview](./img/image.png)
+[Preview](./img/preview.png)
 
 ---
 
