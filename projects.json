@@ -2920,5 +2920,18 @@
   ],
   "difficulty": "intermediate",
   "projectPath": "./public/UnitVerse/index.html"
+  },
+  {
+    "projectNo": 231,
+    "projectName": "Portfolio Studio",
+    "projectType": "Website",
+    "projectDesc": "A web-based tool that allows users to create and customize their own portfolio websites.",
+    "techStack": [
+      "html",
+      "css",
+      "javascript"
+    ],
+    "difficulty": "advanced",
+    "projectPath": "./public/Portfolio_Studio/index.html"
   }
 ]
