@@ -3005,21 +3005,47 @@
     "difficulty": "intermediate",
     "projectPath": "./public/FLAVOURLY/index.html"
   },
-  {
-    "projectNo": 237,
-    "projectName": "Whos's That Pokemon Game",
-    "projectType": "Game",
-    "projectDesc": "An interactive classic who's that pokemon game. It comes with classic fonts and a score tracker",
-    "techStack": [
-      "html",
-      "css",
-      "javascript"
-    ],
-    "difficulty": "advanced",
-    "projectPath": "./public/WhosThatPokemon/index.html"
-  },
-  {
-    "projectNo": 238,
+    {
+      "projectNo": 237,
+      "projectName": "Whos's That Pokemon Game",
+      "projectType": "Game",
+      "projectDesc": "An interactive classic who's that pokemon game. It comes with classic fonts and a score tracker",
+      "techStack": [
+        "html",
+        "css",
+        "javascript"
+      ],
+      "difficulty": "advanced",
+      "projectPath": "./public/WhosThatPokemon/index.html"
+    },
+    {
+      "projectNo": 238,
+      "projectName": "Red-Black Tree Visualizer",
+      "projectType": "Tool",
+      "projectDesc": "Interactive DSA tool to visualize the insertion, balancing, rotations, and recoloring of a Red-Black Tree in real-time.",
+      "techStack": [
+        "html",
+        "css",
+        "javascript"
+      ],
+      "difficulty": "advanced",
+      "projectPath": "./public/RedBlackTreeVisualizer/index.html"
+    },
+    {
+      "projectNo": 239,
+      "projectName": "LayerText",
+      "projectType": "Tool",
+      "projectDesc": "Tool for Frontend Developers",
+      "techStack": [
+        "html",
+        "css",
+        "javascript"
+      ],
+      "difficulty": "advanced",
+      "projectPath": "./public/css-animation/index.html"
+    }
+   {
+    "projectNo": 240,
     "projectName": "PhishGuard AI Terminal",
     "projectType": "Tool",
     "projectDesc": "A cyber-themed URL analysis tool that detects potentially suspicious or phishing-like links using rule-based heuristic scoring. Features a hacker-style terminal UI with an animated Matrix background, a live scanning log, and AI-style threat explanations with a confidence score.",
@@ -3031,5 +3057,4 @@
     ],
     "difficulty": "intermediate",
     "projectPath": "./public/PhishGuard-AI-Terminal/index.html"
-  }
 ]
