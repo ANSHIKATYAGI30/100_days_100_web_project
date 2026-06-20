@@ -3044,5 +3044,20 @@
       ],
       "difficulty": "advanced",
       "projectPath": "./public/css-animation/index.html"
-    }
+    },
+    {
+    "projectNo": 240,
+    "projectName": "Sorting Algorithm Visualizer",
+    "projectType": "Tool",
+    "projectDesc": "Animates Bubble, Selection, Insertion, Merge, Quick, and Heap Sort on a live bar chart with adjustable speed and array size, plus real-time comparison and swap counters to build intuition for how each algorithm behaves.",
+    "techStack": [
+      "html",
+      "css",
+      "javascript",
+      "visualizer",
+      "algorithm"
+    ],
+    "difficulty": "intermediate",
+    "projectPath": "./public/SortingVisualizer/index.html"
+  }
 ]
